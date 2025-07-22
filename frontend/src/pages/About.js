@@ -9,6 +9,7 @@ const About = () => (
       <li><a href="https://instagram.com">Instagram</a></li>
       <li><a href="https://twitter.com">Twitter</a></li>
       <li><a href="mailto:team@balancedbeings.com">Email Us</a></li>
+      <li><a href="https://facebook.com">Facebook</a></li>
     </ul>
   </section>
 );

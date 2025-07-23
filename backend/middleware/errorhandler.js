@@ -1,53 +1,43 @@
-import asyncHandler from "./asyncHandler.js";
-
-const errorHandler = (err, req, res, nest) => {
-    let error = {...err};
+const errorHandler = (err, req, res, next) => { 
+    let error = { ...err };
     error.message = err.message;
+
     console.log(err);
- //* Handling bad ObId
- if (err.name === 'CastError') {
-    const message = 'Resource is unavailable';
-    error = {message, statusCode: 404};
- }
 
-//* Handling duplicate keys
-  if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
-    error = { message, statusCode: 400 };
-  }
+    //* Handling bad ObjectId (MongoDB)
+    if (err.name === 'CastError') {
+        const message = 'Resource not found';
+        error = { message, statusCode: 404 };
+    }
 
+    //* Handling duplicate keys (MongoDB)
+     if (err.code === 11000) {
+        const message = 'Duplicate field value entered';
+        error = { message, statusCode: 400 };
+    }
 
+    //* Handling validation errors (Mongoose)
+     if (err.name === 'ValidationError') {
+        const message = Object.values(err.errors).map(val => val.message).join(', ');
+        error = { message, statusCode: 400 };
+    }
 
-//* Handling validation errors
+    //* Handling JWT errors
+    if (err.name === 'JsonWebTokenError') {  
+        const message = 'Invalid token';
+        error = { message, statusCode: 401 };  
+    }
 
-  if (err.name === 'ValidationError') {
-    const message = Object.values(error.errors).map(val => val.message).join(',');
-    error = { message, statusCode: 400 };
-  }
+       if (err.name === 'TokenExpiredError') {  
+        const message = 'Token expired';
+        error = { message, statusCode: 401 };  
+    }
 
-
-
-
-  //* Handling JWT errors
-
-  if (err.name === 'JwtError') {
-    const message = 'Token is invalid';
-    error = { message, statusCode: 4001};
-  }
-
-   if (err.name === 'ExpiredTokenError') {
-    const message = 'Token is expired';
-    error = { message, statusCode: 4001};
-  }
-
-
-  res.status(error.statusCode || 500).json({
-success: false,
-    message: error.message || 'Server Error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-
-  });
-
-};//note: last parenthesis
+     res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message || 'Server Error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+};
 
 export default errorHandler;

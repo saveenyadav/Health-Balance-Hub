@@ -23,7 +23,7 @@ app.use(express.json())  //* tells the app (const app = express(); to use json d
 app.use(express.urlencoded({extended:true})) //* enable app read url-encoded data
 
 //* Our first test route
-app.get ('/api/test', (req,res) => {
+app.get('/api/test', (req,res) => {
     res.json({
        message:'API test is working!', 
        timestamp: new Date().toISOString()
@@ -31,14 +31,14 @@ app.get ('/api/test', (req,res) => {
 });
 
 //* Testing global errorHandler
-app.get ('/api/test-error', (req,res, next) => {
+app.get('/api/test-error', (req,res, next) => {
    const error = new Error('This is just a test error');
   error.statusCode = 400;
   next(error);
 });
 
-//*Ungandled routes handling
-app.use ('*', (req,res, next) => {
+//*Unhandled routes handling
+app.all('*', (req,res, next) => {
    const error = new Error(`Route ${req.originalUrl} not found`);
   error.statusCode = 404;
   next(error);
@@ -53,7 +53,13 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
+// 4. Process-level error handlers (AFTER server starts)
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  server.close(() => {
+    process.exit(1);
+  });
+});
 
 
 // ERROR TEST URLS

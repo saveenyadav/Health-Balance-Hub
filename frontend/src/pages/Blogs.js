@@ -1,23 +1,24 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BlogCard from '../components/BlogCard';
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
-
+  const fetchBlogs = async () => {
+    const res = await axios.get('/api/blogs');
+    setBlogs(res.data);
+  };
   useEffect(() => {
-    axios.get('/api/blogs')
-      .then(res => setBlogs(res.data))
-      .catch(console.error);
+    fetchBlogs();
   }, []);
 
   return (
-    <section className="blogs-page">
-      <h2>Wellness Blog</h2>
-      {blogs.length > 0 ? blogs.map(blog => (
-        <BlogCard key={blog._id} blog={blog} />
-      )) : <p>No blogs found</p>}
-    </section>
+    <main className="container">
+      <h2>Our Blog</h2>
+      <section className="blogs-grid">
+        {blogs.map(b => <BlogCard key={b._id} blog={b} />)}
+      </section>
+    </main>
   );
 };
 

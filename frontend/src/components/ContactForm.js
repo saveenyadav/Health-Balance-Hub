@@ -1,28 +1,28 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-const ContactForm = () => {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
-
+export default function ContactForm() {
+  const [form, setForm] = useState({ name:'', email:'', message:'' });
+  const [status, setStatus] = useState(null);
+  const handleChange = e => setForm({...form,[e.target.name]: e.target.value});
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       await axios.post('/api/contact', form);
-      alert('Message sent!');
-      setForm({ name: '', email: '', message: '' });
+      setStatus('Sent! Thanks for contacting us.');
+      setForm({ name:'', email:'', message:'' });
     } catch {
-      alert('Submission failed');
+      setStatus('Error sending message.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input placeholder="Name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-      <input placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-      <textarea placeholder="Message" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
+    <form onSubmit={handleSubmit} className="contact-form">
+      <label>Name<input name="name" value={form.name} onChange={handleChange} required/></label>
+      <label>Email<input type="email" name="email" value={form.email} onChange={handleChange} required/></label>
+      <label>Message<textarea name="message" value={form.message} onChange={handleChange} required/></label>
       <button type="submit">Send</button>
+      {status && <p aria-live="polite">{status}</p>}
     </form>
   );
-};
-
-export default ContactForm;
+}

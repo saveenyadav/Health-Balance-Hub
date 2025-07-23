@@ -47,7 +47,7 @@ app.all('*', (req,res, next) => {
 app.use(errorHandler);//*Must always be the last Middleware as used here
 
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -63,6 +63,6 @@ process.on('unhandledRejection', (err, promise) => {
 
 
 // ERROR TEST URLS
-//GET http://localhost:5000/api/test
-// GET http://localhost:5000/api/test-error
-// GET http://localhost:5000/api/nonexistent
+//GET http://localhost:5001/api/test
+// GET http://localhost:5001/api/test-error
+// GET http://localhost:5001/api/nonexistent

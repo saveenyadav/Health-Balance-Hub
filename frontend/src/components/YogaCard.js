@@ -1,26 +1,18 @@
-import axios from 'axios';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const YogaCard = ({ session }) => {
-  const handleBooking = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      await axios.post(`/api/yoga/${session._id}/book`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert('Booking confirmed!');
-    } catch {
-      alert('Please log in to book');
-    }
-  };
+const YogaCard = ({ session, onBook }) => (
+  <div className="yoga-card">
+    <img src={session.image} alt={session.title} />
+    <h3>{session.title}</h3>
+    <p>{session.description}</p>
+    <button onClick={() => onBook(session)}>Book Now</button>
+  </div>
+);
 
-  return (
-    <div className="yoga-card">
-      <h3>{session.title}</h3>
-      <p>Trainer: {session.trainer}</p>
-      <p>Schedule: {session.schedule}</p>
-      <button onClick={handleBooking}>Book</button>
-    </div>
-  );
+YogaCard.propTypes = {
+  session: PropTypes.object.isRequired,
+  onBook: PropTypes.func.isRequired,
 };
 
 export default YogaCard;

@@ -1,30 +1,62 @@
 .header {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.videoBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.overlay {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #ddd;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: white;
+  background: rgba(0, 0, 0, 0.4); /* optional dark overlay */
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  margin-bottom: 1rem;
 }
 
 .logo img {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
 }
 
 .nav a {
-  margin-left: 15px;
+  color: #fff;
   text-decoration: none;
-  color: #333;
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .nav a:hover {
-  color: #0077cc;
+  text-decoration: underline;
+  color: #ffd700;
 }

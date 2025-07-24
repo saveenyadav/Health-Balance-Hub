@@ -1,31 +1,3 @@
-Good Afternoon everyone,
-
-Our team name is Balanced Beings, and our project is called Health Balance Hub.
-
-Our website focuses on three key aspects of well-being:
-Nutrition, Physical Fitness, and Mental Health — because we believe true health comes from balancing all three.
-
-The idea behind Health Balance Hub is to create a platform where users can find guidance on healthy eating, effective workout routines, and mental wellness practices — all in one.
-We aim to build a clean, user-friendly design, interactive features, and valuable content for everyday people looking to improve their health.
-
-Technically, it will be a full-stack project — built with HTML, CSS, JavaScript, React, Node.js, Express, and MongoDB. We'll also use GitHub for collaboration and follow industry-standard coding practices.
-
-Our goal is to create a website that's both informative and engaging —
-a space that helps users take small steps toward a healthier, balanced life.
-
-Sprint Plan Overview (6 Weeks, 4 Days/Week)
-Sprint	Focus	Frontend	Backend
-Sprint 1	Planning & Setup	Wireframes, UI plan	Project setup, DB schema
-Sprint 2	Basic Layout & Auth	Nav, routing, login/register	Auth routes, user model
-Sprint 3	Core Features I	Gym/Home/Nutrition pages	Endpoints for training & nutrition
-Sprint 4	Core Features II	Mind/Yoga + Map + Timetable link	Map data endpoint, schedule API
-Sprint 5	Integration & Testing	Connect pages to data, mobile fix	Testing routes, bug fixes
-Sprint 6	Final Polish & Deployment	Styling, responsiveness	Deployment, cleanup
-
-Got it! Here's your updated presentation draft with roles included:
-
----
-
 **Good afternoon, everyone.**
 
 Our team name is **Balanced Beings**, and our project is called **Health Balance Hub**.

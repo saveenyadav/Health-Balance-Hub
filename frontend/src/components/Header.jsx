@@ -1,17 +1,10 @@
-// Header.jsx
-import React from 'react';
-import styles from '../styles/Header.module.css';
+import React from "react";
+import styles from "../styles/Header.module.css";
 
 function Header() {
   return (
     <header className={styles.header}>
-      <video
-        className={styles.videoBackground}
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
+      <video className={styles.videoBackground} autoPlay muted loop playsInline>
         <source src="/videos/hero-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>

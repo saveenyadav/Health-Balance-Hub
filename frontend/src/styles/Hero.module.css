@@ -1,0 +1,60 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* full viewport height */
+  overflow: hidden;
+}
+
+.heroVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills container while keeping aspect ratio */
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* semi-transparent overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.heroContent {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1.5s forwards; /* fade in and move up */
+}
+
+.heroContent h1 {
+  font-size: 3rem;
+  color: lightgoldenrodyellow; /* changed color to a soft yellow */
+  margin-bottom: 20px;
+}
+
+.heroContent p {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContent h1 {
+    font-size: 2rem;
+  }
+  .heroContent p {
+    font-size: 1rem;
+  }
+}

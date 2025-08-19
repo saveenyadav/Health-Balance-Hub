@@ -1,33 +1,45 @@
 // Header.jsx
-import React from 'react';
-import styles from '../styles/Header.module.css';
+import React, { useState } from "react";
+import styles from "../styles/Header.module.css";
+import { FaSearch, FaUser, FaBars, FaTimes } from "react-icons/fa";
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <header className={styles.header}>
-      <video
-        className={styles.videoBackground}
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src="/videos/hero-video.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <div className={styles.headerContent}>
+        {/* Mobile menu icon */}
+        <div className={styles.mobileMenuIcon} onClick={toggleMenu}>
+          {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </div>
 
-      <div className={styles.overlay}>
+        {/* Logo */}
         <div className={styles.logo}>
           <img src="/hbhLogo.png" alt="Health Balance Hub" />
-          <h1>Health Balance Hub</h1>
+          <span>Health Balance Hub</span>
         </div>
-        <nav className={styles.nav}>
+
+        {/* Navigation */}
+        <nav className={`${styles.nav} ${menuOpen ? styles.active : ""}`}>
           <a href="/">Home</a>
+          <a href="/about">About</a>
           <a href="/blogs">Blogs</a>
-          <a href="/yoga">Yoga</a>
+          <a href="/workout">Workout</a>
+          <a href="/nutrition">Nutrition</a>
+          <a href="/mindset">Mindset</a>
           <a href="/contact">Contact</a>
-          <a href="/login">Login</a>
         </nav>
+
+        {/* Icons */}
+        <div className={styles.icons}>
+          <FaSearch size={20} />
+          <FaUser size={20} />
+        </div>
       </div>
     </header>
   );

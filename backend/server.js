@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import connectDB from "./config/database.js";
 import errorHandler from './middleware/errorhandler.js';
+import User from './models/User.js';
 
 
 
@@ -14,7 +15,7 @@ connectDB();//* connects to our DB
 
 const app = express();//* initializes Express App instance
 
-// Security Middleware
+//* Security Middleware
 app.use(cors()) //* CORS (Cross-Origin Resource Sharing) is a middlewar function.
 app.use(helmet()) //*for securing HTTP headers and injection prevention
 
@@ -29,6 +30,55 @@ app.get('/api/test', (req,res) => {
        timestamp: new Date().toISOString()
     });
 });
+
+
+//* Creating a test-User. Successfull tested with Postman and MongoDb
+//* ONLY for Development Environment
+if (process.env.NODE_ENV === 'development') {
+
+  //* create a test user -route (development only)
+  app.post('/api/test-user', async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+
+      if (!name || !email || !password) {
+        return res.status(400).json({ message: 'Name, email, and password are required' });
+      }
+
+      const newUser = await User.create({ name, email, password });
+      const userResponse = newUser.toObject();
+      delete userResponse.password; // remove password from response
+
+      res.json({ message: 'Test user created!', user: userResponse });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+
+
+
+  //* MongoDB connection test route (development-only)
+  app.get('/api/test-db', async (req, res) => {
+    try {
+      const users = await User.find().select('-password'); // exclude passwords
+      res.json({ message: "DB: Working Perfectly!", users });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 
 //* Testing global errorHandler
 app.get('/api/test-error', (req,res, next) => {

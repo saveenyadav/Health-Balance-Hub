@@ -1,43 +1,17 @@
+/* ===== Global Reset ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  --primary: #0077cc;
-  --secondary: #28a745;
-  --light-bg: #f7f7f7;
-  --dark-text: #222;
-  --border-radius: 10px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --max-width: 1200px;
+html, body, #root {
+  height: 100%;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--light-bg);
-  color: var(--dark-text);
-  line-height: 1.6;
-}
-
-a {
-  color: var(--primary);
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-  border-radius: var(--border-radius);
-}
-
-.container {
-  width: 100%;
-  max-width: var(--max-width);
-  margin: auto;
-  padding: 1rem;
+  font-family: Arial, sans-serif;
+  background-color: #fff; /* keep background white */
+  color: #333;
+  line-height: 1.5;
 }

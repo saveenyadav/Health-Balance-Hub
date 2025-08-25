@@ -1,0 +1,242 @@
+/* Container & Theme */
+.workout-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+.workout-container.light {
+  background: #fffaf0;
+  color: #333;
+}
+
+.workout-container.dark {
+  background: #1c1c1c;
+  color: #f5f5f5;
+}
+
+/* Header */
+.workout-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.filter-buttons {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.filter-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  background: #ffc107;
+  color: #333;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+.filter-buttons button:hover {
+  background: #fd7e14;
+  color: #fff;
+}
+
+.workout-container.dark .filter-buttons button {
+  background: #FF6F61;
+  color: #fff;
+}
+
+.workout-container.dark .filter-buttons button:hover {
+  background: #007BFF;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  margin-bottom: 1rem;
+}
+
+.theme-toggle button {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  background: #ffc107;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.theme-toggle button:hover {
+  background: #fd7e14;
+}
+
+/* Workouts Grid */
+.workouts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Workout Card */
+.workout-card {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.3s, background 0.3s, color 0.3s;
+  cursor: pointer;
+  border-top: 6px solid transparent; /* for colored top border */
+}
+
+.workout-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Colored Shadows & Top Border by Type */
+.workout-card[data-type="Cardio"] {
+  box-shadow: 0 4px 15px rgba(255, 99, 71, 0.4);
+  border-top-color: #FF6347; /* tomato red */
+}
+
+.workout-card[data-type="Strength"] {
+  box-shadow: 0 4px 15px rgba(54, 162, 235, 0.4);
+  border-top-color: #3692EB; /* blue */
+}
+
+.workout-card[data-type="Yoga"] {
+  box-shadow: 0 4px 15px rgba(75, 192, 192, 0.4);
+  border-top-color: #4BC0C0; /* teal */
+}
+
+.workout-card[data-type="Stretching"] {
+  box-shadow: 0 4px 15px rgba(255, 159, 64, 0.4);
+  border-top-color: #FF9F40; /* orange */
+}
+
+/* Workout Content */
+.workout-card img.workout-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.workout-content {
+  padding: 1rem;
+}
+
+.workout-content h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.workout-content p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Difficulty Badges */
+.badge.difficulty.beginner { background: #28a745; }
+.badge.difficulty.intermediate { background: #17a2b8; }
+.badge.difficulty.advanced { background: #dc3545; }
+
+/* Duration Badge */
+.badge.duration { background: #6c757d; }
+
+/* Type Badges */
+.badge.type.cardio { background: #FF6347; }
+.badge.type.strength { background: #3692EB; }
+.badge.type.yoga { background: #4BC0C0; }
+.badge.type.stretching { background: #FF9F40; }
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #FF6F61;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.modal-close:hover {
+  transform: scale(1.2);
+}
+
+/* Video Wrapper */
+.video-wrapper {
+  margin-top: 1rem;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Dark Mode */
+.workout-container.dark .workout-card {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+.workout-container.dark .modal-content {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+
+

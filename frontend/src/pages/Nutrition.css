@@ -1,0 +1,127 @@
+.nutrition-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  background: #f9fafc;
+  border-radius: 12px;
+}
+
+.nutrition-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.nutrition-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  border-bottom: 3px solid #007BFF;
+  display: inline-block;
+  padding-bottom: 0.3rem;
+}
+
+.nutrition-header p {
+  font-size: 1.1rem;
+  color: #555;
+  max-width: 700px;
+  margin: auto;
+}
+
+.meals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.meal-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-top: 4px solid #4CAF50;
+}
+
+.meal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.meal-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.meal-content {
+  padding: 1rem;
+}
+
+.meal-content h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #4CAF50;
+}
+
+.nutrition-tips {
+  background: #e8f5e9;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.nutrition-tips h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #4CAF50;
+  display: inline-block;
+  padding-bottom: 0.2rem;
+}
+
+.nutrition-tips ul {
+  list-style: none;
+  padding: 0;
+  max-width: 700px;
+  margin: auto;
+}
+
+.nutrition-tips li {
+  margin: 0.75rem 0;
+  font-size: 1rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+/* 🔹 Responsive adjustments */
+@media (max-width: 768px) {
+  .nutrition-container {
+    padding: 1rem;
+  }
+
+  .nutrition-header h1 {
+    font-size: 2rem;
+  }
+
+  .meal-img {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nutrition-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .nutrition-header p {
+    font-size: 1rem;
+  }
+
+  .meal-content h2 {
+    font-size: 1.1rem;
+  }
+}
+
+

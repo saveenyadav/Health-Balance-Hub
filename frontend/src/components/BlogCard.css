@@ -1,0 +1,38 @@
+.blog-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+.blog-card:hover {
+  transform: translateY(-5px);
+}
+.blog-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.blog-content {
+  padding: 1rem;
+}
+.blog-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.blog-excerpt {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+.read-more {
+  font-weight: bold;
+  text-decoration: none;
+  color: #007BFF;
+}
+.read-more:hover {
+  text-decoration: underline;
+}

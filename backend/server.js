@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDB from "./config/database.js";
 import errorHandler from './middleware/errorhandler.js';
-
+import authRoutes from './routes/auth.js';
 
 
 dotenv.config()//* Loads our env variables.
@@ -23,7 +23,6 @@ app.use(express.json())  //* tells the app (const app = express(); to use json d
 app.use(express.urlencoded({extended:true})) //* enable app read url-encoded data
 app.use(cookieParser());
 
-
 //* Our basic first test route
 app.get('/api/test', (req,res) => {
     res.json({
@@ -34,11 +33,22 @@ app.get('/api/test', (req,res) => {
 
 
 
-// TODO: Add production auth routes here
-// /api/auth/register
-// /api/auth/login  
-// /api/auth/logout
-// /api/auth/me
+//*Auth routes implemeted
+app.use('/api/auth', authRoutes);
+
+//* HBH Endpoints sofar:
+//* Public (No Auth Required):
+//   POST http://localhost:5001/api/auth/register
+//   POST http://localhost:5001/api/auth/login
+//* 
+//* Protected (Require JWT Token in Authorization header):
+//   POST http://localhost:5001/api/auth/logout
+//   GET  http://localhost:5001/api/auth/user-profile
+//   PUT  http://localhost:5001/api/auth/updatedetails
+//   PUT  http://localhost:5001/api/auth/updatepassword
+//* Example token header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+
 
 
 //* Testing global errorHandler

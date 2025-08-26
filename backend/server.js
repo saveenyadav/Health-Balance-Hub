@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDB from "./config/database.js";
 import errorHandler from './middleware/errorhandler.js';
-import authRoutes from './routes/auth.js';
+import authRoutes from './routes/authRoutes.js';
 
 
 dotenv.config()//* Loads our env variables.

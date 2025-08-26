@@ -5,7 +5,8 @@ import {
     logout,
     getMe,
     updateDetails,
-    updatePassword
+    updatePassword,
+    deleteAccount
 }from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 
@@ -22,5 +23,6 @@ router.post('/logout', logout); //? Must be logged in to logout
 router.get('/user-profile', getMe);//? Must be logged in to see profile
 router.put('/updatedetails', updateDetails);//? Must be logged in to update details
 router.put('/updatepassword', updatePassword);//? Must be logged in to change password
+router.delete('/delete-account', deleteAccount); //? Must be logged in to delete account
 
 export default router;

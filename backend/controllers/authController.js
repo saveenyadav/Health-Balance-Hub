@@ -197,3 +197,42 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
       token
     });
 });
+
+
+
+
+//* Delete user account
+//* DELETE /api/auth/delete-account
+//* Private
+export const deleteAccount = asyncHandler(async (req, res, next) => {
+  const { password } = req.body;
+
+  //* Require password confirmation for security
+  if (!password) {
+    return next(new ErrorResponse('Please provide your password to confirm account deletion', 400));
+  }
+
+  //* Get user with password for verification
+  const user = await User.findById(req.user.id).select('+password');
+
+  //* Verify password before deletion
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    return next(new ErrorResponse('Incorrect password. Account deletion cancelled.', 401));
+  }
+
+  //* Delete the user account
+  await User.findByIdAndDelete(req.user.id);
+
+  //* Clear cookie
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Account deleted successfully. We\'re sorry to see you go!',
+    data: {}
+  });
+});

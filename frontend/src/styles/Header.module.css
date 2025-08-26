@@ -39,7 +39,7 @@
 }
 
 .logo img {
-  height: 40px;
+  height: 70px;
   width: auto;
 }
 
@@ -98,12 +98,12 @@
     transform: translateX(-50%);
   }
 
-  /* Keep icons visible (fix applied) */
+  /* Keep icons visible */
   .icons {
     display: flex;
   }
 
-  /* Hide nav by default, show when active */
+  /* Hide nav by default */
   .nav {
     display: none;
     flex-direction: column;
@@ -116,7 +116,8 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
-  .nav.active {
+  /* Active state for mobile menu */
+  .active {
     display: flex;
   }
 

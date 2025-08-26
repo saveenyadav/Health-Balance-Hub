@@ -78,7 +78,47 @@ Content-Type: application/json
 
 ```
 
-## Test Endpoints
+
+
+#### Delete User Account
+ ### Step 1 - register delete user
+```http
+POST http://localhost:5001/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test Delete User",
+  "email": "testdelete@example.com",
+  "password": "password1000"
+}
+```
+##############
+
+### Step 2 - login delete user and get the token
+
+```http
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testdelete@example.com",
+  "password": "password1000"
+}
+```
+
+### Step 3 - delete account with Fresh Token
+
+```http
+DELETE http://localhost:5001/api/auth/delete-account
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YWRjZGQyYmM1M2NmYzJlZTU1NjNjYiIsImlhdCI6MTc1NjIyMTA2OSwiZXhwIjoxNzU2ODI1ODY5fQ.TfsvSdNlVKbfbtYwIE28NpEV0i_t74vRnNBOOk7uOF4
+Content-Type: application/json
+
+{
+  "password": "password1000"
+}
+```
+
+#### Test Endpoints
 
 #### Basic API Test
 

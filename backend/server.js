@@ -46,6 +46,7 @@ app.use('/api/auth', authRoutes);
 //   GET  http://localhost:5001/api/auth/user-profile
 //   PUT  http://localhost:5001/api/auth/updatedetails
 //   PUT  http://localhost:5001/api/auth/updatepassword
+//   DELETE http://localhost:5001/api/auth/delete-account   
 //* Example token header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 

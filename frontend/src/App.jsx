@@ -8,6 +8,10 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import BlogDetail from "./pages/BlogDetail";
+import Nutrition from "./pages/Nutrition";
+import Navbar from "./components/Navbar";
+import Workout from "./pages/Workout";
 // import Profile from "./pages/Profile";
 import Yoga from "./pages/Yoga";
 import "./styles/App.css";
@@ -24,6 +28,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
+            <Route path="/nutrition" element={<Nutrition />} />
+             <Route path="/workout" element={<Workout />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />

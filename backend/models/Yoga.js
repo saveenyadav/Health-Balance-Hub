@@ -106,6 +106,16 @@ yogaSchema.methods.isFull = function() {
   return this.availableSpots <= 0;
 };
 
+
+
+//* indexes for performance 
+yogaSchema.index({ 'schedule.startTime': 1 }); //*  Fast class scheduling queries
+yogaSchema.index({ type: 1, level: 1 }); //*  Efficient filtering by class type and difficulty
+yogaSchema.index({ instructor: 1 });  //*  Quick instructor-based searches
+yogaSchema.index({ location: 1 });  //*  Fast studio/location filtering
+yogaSchema.index({ isActive: 1 });  //* Rapid active class queries
+
+
 export default mongoose.model('Yoga', yogaSchema);
 
 //* yoga class schema with booking system

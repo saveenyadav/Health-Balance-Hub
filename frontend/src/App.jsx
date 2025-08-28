@@ -12,6 +12,8 @@ import Contact from "./pages/Contact";
 import Search from "./pages/Search";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import BlogDetail from "./pages/BlogDetail";
+import Navbar from "./components/Navbar";
 import "./styles/App.css";
 
 function App() {
@@ -27,6 +29,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
             <Route path="/workout" element={<Workout />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/mindset" element={<Mindset />} />

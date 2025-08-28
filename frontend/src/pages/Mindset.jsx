@@ -1,147 +1,149 @@
 import React from "react";
 import styles from "../styles/Mindset.module.css";
 
-export default function Mindset() {
+const Mindset = () => {
   return (
     <div className={styles.page}>
-      
-      {/* HERO (full-width background, centered content) */}
-      <section className={styles.hero}>
-        <div className={styles.container}>
-          <h1>Master Your Mindset</h1>
-          <p>
-            Unlock your true potential with the right mindset, habits, and
-            guidance.
-          </p>
-          <button className={styles.cta}>Join Now</button>
-        </div>
-      </section>
+      <div className={styles.hero}>
+        <div className={`${styles.container} ${styles.heroContainer}`}>
+          {/* LEFT SIDE CONTENT */}
+          <div className={styles.heroContent}>
+            <h1>Master Your Mindset</h1>
+            <p>
+              Unlock the potential within you through the power of positive
+              thinking, resilience, and self-discipline. Growth starts here.
+            </p>
+          </div>
 
-      {/* SERVICES */}
+          {/* RIGHT SIDE IMAGE */}
+          <div className={styles.heroImage}>
+            <img src="/images/mind.jpeg" alt="Mindset" />
+          </div>
+        </div>
+      </div>
+
+      {/* SERVICES SECTION */}
       <section className={styles.services}>
         <div className={styles.container}>
           <h2>Our Services</h2>
           <div className={styles.cardGrid}>
             <div className={styles.card}>
               <h3>Coaching</h3>
-              <p>Personal guidance to transform your thinking patterns.</p>
+              <p>One-on-one sessions to empower your journey.</p>
             </div>
             <div className={styles.card}>
               <h3>Workshops</h3>
-              <p>Interactive sessions to practice growth mindset strategies.</p>
+              <p>Interactive workshops to shift your perspective.</p>
             </div>
             <div className={styles.card}>
               <h3>Resources</h3>
-              <p>Guides and exercises to build resilience and positivity.</p>
+              <p>Guides, videos, and tools to strengthen your mindset.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
+      {/* PROCESS SECTION */}
       <section className={styles.process}>
         <div className={styles.container}>
           <h2>Our Process</h2>
           <ul className={styles.steps}>
             <li><span>1</span> Awareness</li>
-            <li><span>2</span> Reflection</li>
-            <li><span>3</span> Action</li>
-            <li><span>4</span> Growth</li>
+            <li><span>2</span> Action</li>
+            <li><span>3</span> Accountability</li>
           </ul>
         </div>
       </section>
 
-      {/* TRAINERS */}
+      {/* TRAINERS SECTION */}
       <section className={styles.trainers}>
         <div className={styles.container}>
           <h2>Meet Our Trainers</h2>
           <div className={styles.trainerGrid}>
             <div className={styles.trainer}>
-              <img src="/trainer1.jpg" alt="Trainer 1" />
-              <h3>Alex Johnson</h3>
+              <img src="/images/mind.jpeg" alt="Trainer 1" />
+              <h3>Jane Doe</h3>
               <p>Mindset Coach</p>
             </div>
             <div className={styles.trainer}>
-              <img src="/trainer2.jpg" alt="Trainer 2" />
-              <h3>Sophia Lee</h3>
-              <p>Wellness Mentor</p>
+              <img src="/images/mind.jpeg" alt="Trainer 2" />
+              <h3>John Smith</h3>
+              <p>Motivational Speaker</p>
             </div>
             <div className={styles.trainer}>
-              <img src="/trainer3.jpg" alt="Trainer 3" />
-              <h3>David Smith</h3>
-              <p>Growth Strategist</p>
+              <img src="/images/mind.jpeg" alt="Trainer 3" />
+              <h3>Sara Lee</h3>
+              <p>Wellness Mentor</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SCHEDULE */}
+      {/* SCHEDULE SECTION */}
       <section className={styles.schedule}>
         <div className={styles.container}>
-          <h2>Weekly Schedule</h2>
+          <h2>Schedule</h2>
           <table>
             <thead>
               <tr>
                 <th>Day</th>
                 <th>Session</th>
-                <th>Trainer</th>
+                <th>Time</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Monday</td>
-                <td>Mindfulness Basics</td>
-                <td>Alex</td>
+                <td>Mindfulness Workshop</td>
+                <td>10:00 AM</td>
               </tr>
               <tr>
                 <td>Wednesday</td>
-                <td>Resilience Training</td>
-                <td>Sophia</td>
+                <td>Group Coaching</td>
+                <td>2:00 PM</td>
               </tr>
               <tr>
                 <td>Friday</td>
-                <td>Growth Hacking</td>
-                <td>David</td>
+                <td>Motivation Session</td>
+                <td>6:00 PM</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      {/* RESOURCES */}
+      {/* RESOURCES SECTION */}
       <section className={styles.resources}>
         <div className={styles.container}>
-          <h2>Free Resources</h2>
-          <p>
-            Access free e-books, guides, and daily exercises to boost your
-            mindset.
-          </p>
+          <h2>Resources</h2>
+          <p>Explore our collection of tools to support your growth journey.</p>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* TESTIMONIALS SECTION */}
       <section className={styles.testimonials}>
         <div className={styles.container}>
-          <h2>What People Say</h2>
+          <h2>Testimonials</h2>
           <div className={styles.testimonialList}>
             <blockquote>
-              “This program completely changed the way I see challenges in life.”
+              "This program changed my life. I feel more confident and focused."
             </blockquote>
             <blockquote>
-              “The trainers are amazing and supportive throughout the journey.”
+              "The workshops gave me clarity and motivation like never before."
             </blockquote>
           </div>
         </div>
       </section>
 
-      {/* FINAL CTA (full-width background, centered content) */}
+      {/* FINAL CTA */}
       <section className={styles.finalCta}>
         <div className={styles.container}>
-          <h2>Ready to Transform Your Mindset?</h2>
-          <button className={styles.cta}>Get Started</button>
+          <h2>Start Your Journey Today</h2>
+          <p>Your new mindset is just one step away.</p>
         </div>
       </section>
-
     </div>
   );
-}
+};
+
+export default Mindset;

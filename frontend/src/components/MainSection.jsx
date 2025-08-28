@@ -61,23 +61,6 @@ function MainSection() {
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className={styles.mapSection}>
-        <h2>Find Us</h2>
-        <p>Visit our location and be part of the Health Balance Hub community.</p>
-        <div className={styles.mapContainer}>
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2429.988229180008!2d13.404954315773063!3d52.52000627981121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a851e2f09fd4b7%3A0x421b1cbf4fcf4b0!2sBerlin!5e0!3m2!1sen!2sde!4v1674493770000!5m2!1sen!2sde"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Google Map"
-          ></iframe>
-        </div>
-      </div>
     </section>
   );
 }

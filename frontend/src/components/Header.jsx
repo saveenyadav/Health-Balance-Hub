@@ -20,7 +20,7 @@ function Header() {
 
         {/* Logo */}
         <div className={styles.logo}>
-          <img src="/hbhLogo.png" alt="Health Balance Hub" />
+          <img src="/images/hbhLogo.png" alt="Health Balance Hub" />
           <span>Health Balance Hub</span>
         </div>
 

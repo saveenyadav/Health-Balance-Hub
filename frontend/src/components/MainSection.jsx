@@ -6,7 +6,7 @@ function MainSection() {
     <section className={styles.mainSection}>
       {/* Workout */}
       <div className={styles.section}>
-        <img src="/workout.jpg" alt="Workout" className={styles.image} />
+        <img src="/images/workout.jpg" alt="Workout" className={styles.image} />
         <div className={styles.text}>
           <h2>Workout</h2>
           <p>
@@ -19,7 +19,7 @@ function MainSection() {
 
       {/* Nutrition */}
       <div className={styles.section}>
-        <img src="/nutrition.jpg" alt="Nutrition" className={styles.image} />
+        <img src="/images/nutrition.jpg" alt="Nutrition" className={styles.image} />
         <div className={styles.text}>
           <h2>Nutrition</h2>
           <p>
@@ -32,7 +32,7 @@ function MainSection() {
 
       {/* Mindset */}
       <div className={styles.section}>
-        <img src="/mindset.jpg" alt="Mindset" className={styles.image} />
+        <img src="/images/mindset.jpg" alt="Mindset" className={styles.image} />
         <div className={styles.text}>
           <h2>Mindset</h2>
           <p>
@@ -53,10 +53,14 @@ function MainSection() {
         </p>
         <div className={styles.challengeBox}>
           <h3>This Week’s Challenge:</h3>
-          <p>15-minute full-body stretch before work. Snap a photo or share your experience!</p>
+          <p>
+            15-minute full-body stretch before work. Snap a photo or share your
+            experience!
+          </p>
           <button className={styles.ctaButton}>Join the Challenge</button>
         </div>
       </div>
+
     </section>
   );
 }

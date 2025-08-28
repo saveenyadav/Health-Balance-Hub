@@ -1,3 +1,5 @@
+/* src/styles/Hero.module.css */
+
 .hero {
   position: relative;
   width: 100%;
@@ -33,7 +35,7 @@
 
 .heroContent h1 {
   font-size: 3rem;
-  color: lightgoldenrodyellow; /* changed color to a soft yellow */
+  color: lightgoldenrodyellow; /* soft yellow */
   margin-bottom: 20px;
 }
 

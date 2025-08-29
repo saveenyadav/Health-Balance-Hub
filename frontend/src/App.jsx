@@ -37,6 +37,7 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+             <Route path="/navbar" element={<Navbar />} />
           </Routes>
         </main>
 

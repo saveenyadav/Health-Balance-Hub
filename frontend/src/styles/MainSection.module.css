@@ -8,9 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 3rem; /* slightly reduced for balance */
+  margin-bottom: 3rem;
   gap: 2rem;
-  transition: transform 0.3s ease; /* smooth hover effect */
+  transition: transform 0.3s ease;
 }
 
 .section:hover {
@@ -18,7 +18,7 @@
 }
 
 .image {
-  width: 35%; /* reduced from 40% for smaller images */
+  width: 35%;
   height: auto;
   border-radius: 12px;
   object-fit: cover;
@@ -35,7 +35,7 @@
 }
 
 .text h2 {
-  font-size: 2rem; /* slightly larger for better hierarchy */
+  font-size: 2rem;
   margin-bottom: 1rem;
   color: #333;
 }
@@ -48,7 +48,7 @@
 
 /* Wellness Wednesday Challenge */
 .wellnessChallenge {
-  background-color: #fff3e0; /* soft highlight color */
+  background-color: #fff3e0;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -64,7 +64,7 @@
 .wellnessChallenge h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #ff7043; /* accent color */
+  color: #ff7043;
 }
 
 .wellnessChallenge p {
@@ -110,6 +110,34 @@
   transform: scale(1.05);
 }
 
+/* Map Section */
+.mapSection {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.mapSection h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.mapSection p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.mapContainer {
+  width: 90%;
+  max-width: 900px;
+  height: 400px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive (mobile) */
 @media (max-width: 768px) {
   .section {
@@ -119,7 +147,7 @@
   }
 
   .image {
-    width: 80%; /* more compact on mobile */
+    width: 80%;
   }
 
   .text {
@@ -135,5 +163,9 @@
     width: 100%;
     text-align: center;
   }
-}
 
+  .mapContainer {
+    width: 100%;
+    height: 300px;
+  }
+}

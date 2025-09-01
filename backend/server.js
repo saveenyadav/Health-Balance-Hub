@@ -5,96 +5,121 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDB from "./config/database.js";
 import errorHandler from './middleware/errorHandler.js';
+
+//* Import all route files
 import authRoutes from './routes/authRoutes.js';
 import yogaRoutes from './routes/yogaRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import userProfileRoutes from './routes/userProfileRoutes.js';
+import blogRoutes from './routes/blogRoutes.js';           
+import contactRoutes from './routes/contactRoutes.js';
 
+//* Load environment variables
+dotenv.config();
 
-dotenv.config()//* Loads our env variables.
+//* Validate required environment variables
+if (!process.env.JWT_SECRET || !process.env.MONGO_URI) {
+  console.error('Missing required environment variables (JWT_SECRET, MONGO_URI)');
+  process.exit(1);
+}
 
-connectDB();//* connects to our DB
+//* Connect to database
+connectDB();
 
-const app = express();//* initializes Express App instance
+//* Initialize Express app
+const app = express();
 
 //* Security Middleware
-app.use(cors()) //* CORS (Cross-Origin Resource Sharing) is a middlewar function.
-app.use(helmet()) //*for securing HTTP headers and injection prevention
+app.use(cors()); //* CORS (Cross-Origin Resource Sharing)
+app.use(helmet()); //* Security headers protection
 
 //* Body Parser Middleware
-app.use(express.json())  //* tells the app (const app = express(); to use json data)
-app.use(express.urlencoded({extended:true})) //* enable app read url-encoded data
-app.use(cookieParser());
+app.use(express.json({ limit: '10mb' })); // JSON parser with size limit
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // URL-encoded parser
+app.use(cookieParser()); // Cookie parser
 
-//* Our basic first test route
-app.get('/api/test', (req,res) => {
-    res.json({
-       message:'API test is working!', 
-       timestamp: new Date().toISOString()
+//* API Health Check
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+       status: 'success',
+       message: 'Health Balance Hub API is running!', 
+       timestamp: new Date().toISOString(),
+       version: '1.0.0'
     });
 });
 
+//* API Routes
+app.use('/api/auth', authRoutes);              //? Authentication system
+app.use('/api/yoga-classes', yogaRoutes);      //? Yoga class management
+app.use('/api/bookings', bookingRoutes);       //? Booking system
+app.use('/api/user-profile', userProfileRoutes); //? User profiles & dashboard
+app.use('/api/blogs', blogRoutes);             //? Blog management
+app.use('/api/contact', contactRoutes);        //? Contact form system
 
-
-//*Auth routes implemeted
-app.use('/api/auth', authRoutes);
-
-//* HBH Endpoints sofar:
-//* Public (No Auth Required):
-//   POST http://localhost:5001/api/auth/register
-//   POST http://localhost:5001/api/auth/login
-//* 
-//* Protected (Require JWT Token in Authorization header):
-//   POST http://localhost:5001/api/auth/logout
-//   GET  http://localhost:5001/api/auth/user-profile
-//   PUT  http://localhost:5001/api/auth/updatedetails
-//   PUT  http://localhost:5001/api/auth/updatepassword
-//   DELETE http://localhost:5001/api/auth/delete-account   
-//* Example token header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-
-app.use('/api/yoga-classes', yogaRoutes); // new
-
-
-app.use('/api/bookings', bookingRoutes); // new  
-
-
-app.use('/api/user-profile', userProfileRoutes); // new
-
-
-
-
-
-
-//* Testing global errorHandler
-app.get('/api/test-error', (req,res, next) => {
-   const error = new Error('This is just a test error');
-  error.statusCode = 400;
-  next(error);
+//* API Documentation Endpoint
+app.get('/api', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Welcome to Health Balance Hub API',
+        version: '1.0.0',
+        endpoints: {
+            authentication: '/api/auth',
+            yogaClasses: '/api/yoga-classes',
+            bookings: '/api/bookings',
+            userProfile: '/api/user-profile',
+            blogs: '/api/blogs',
+            contact: '/api/contact',
+            health: '/api/health'
+        },
+        documentation: 'See API_ENDPOINTS.md for detailed documentation'
+    });
 });
 
-//*Unhandled routes handling
-app.all('*', (req,res, next) => {
+//* Error Testing Route (Development only)
+if (process.env.NODE_ENV === 'development') {
+    app.get('/api/test-error', (req, res, next) => {
+       const error = new Error('This is a test error for development');
+       error.statusCode = 400;
+       next(error);
+    });
+}
+
+//* Handle unmatched routes (404)
+app.all('*', (req, res, next) => {
    const error = new Error(`Route ${req.originalUrl} not found`);
-  error.statusCode = 404;
-  next(error);
+   error.statusCode = 404;
+   next(error);
 });
 
-app.use(errorHandler);//*Must always be the last Middleware as used here
+//* Global error handler (must be last middleware)
+app.use(errorHandler);
 
-
+//* Start server
 const PORT = process.env.PORT || 5001;
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`API Documentation: http://localhost:${PORT}/api`);
+  console.log(`Health Check: http://localhost:${PORT}/api/health`);
 });
 
-//* Process-level error handlers (AFTER server starts)
+//* Graceful shutdown handlers
 process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
+  console.error(`Unhandled Promise Rejection: ${err.message}`);
   server.close(() => {
     process.exit(1);
   });
 });
 
+process.on('uncaughtException', (err) => {
+  console.error(`Uncaught Exception: ${err.message}`);
+  process.exit(1);
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('Process terminated');
+  });
+});

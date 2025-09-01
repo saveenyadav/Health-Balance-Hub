@@ -113,7 +113,6 @@ userProfileSchema.methods.updateBookingStats = function() {
 };
 
 //* Indexes for performance
-userProfileSchema.index({ user: 1 });
 userProfileSchema.index({ 'preferences.fitnessLevel': 1 });
 userProfileSchema.index({ 'bookingStats.totalClasses': -1 });
 

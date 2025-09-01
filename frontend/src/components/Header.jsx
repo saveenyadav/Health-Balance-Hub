@@ -1,5 +1,6 @@
 // Header.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; 
 import styles from "../styles/Header.module.css";
 import { FaSearch, FaUser, FaBars, FaTimes } from "react-icons/fa";
 
@@ -26,19 +27,27 @@ function Header() {
 
         {/* Navigation */}
         <nav className={`${styles.nav} ${menuOpen ? styles.active : ""}`}>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/blogs">Blogs</a>
-          <a href="/workout">Workout</a>
-          <a href="/nutrition">Nutrition</a>
-          <a href="/mindset">Mindset</a>
-          <a href="/contact">Contact</a>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/blogs">Blogs</Link>
+          <Link to="/workout">Workout</Link>
+          <Link to="/nutrition">Nutrition</Link>
+          <Link to="/mindset">Mindset</Link>
+          <Link to="/contact">Contact</Link>
         </nav>
 
         {/* Icons */}
         <div className={styles.icons}>
-          <FaSearch size={20} />
-          <FaUser size={20} />
+          {/* Search icon -> optional search page */}
+          <Link to="/search">
+            <FaSearch size={20} />
+          </Link>
+
+          {/* User icon -> login page */}
+          <Link to="/login">
+            <FaUser size={20} />
+          </Link>
+          
         </div>
       </div>
     </header>

@@ -1,0 +1,231 @@
+.aboutPage {
+  --primary: #906137;
+  --accent: #805AD5;
+  --ink: #222;
+  --muted: #666;
+  --card: #ffffff;
+
+  color: var(--ink);
+  background: #fdfdfd;
+  min-height: 100vh;
+  padding: 2rem 1rem 3rem;
+}
+
+
+.aboutHero {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 2rem;
+}
+.aboutHero h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+.aboutHero .highlight {
+  color: var(--primary);
+}
+.aboutHero p {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  color: var(--muted);
+  font-weight: 600; 
+}
+
+
+.missionVision {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 1rem auto 2rem;
+}
+.mvCard {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.06);
+}
+.mvCard h3 {
+  color: var(--primary);
+  margin-bottom: 0.4rem;
+  font-weight: 800;
+}
+.mvCard p {
+  color: var(--ink);
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+
+.sectionTitle {
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin: 1.5rem 0 0.5rem;
+  letter-spacing: 0.2px;
+}
+
+
+.teamSection {
+  max-width: 1100px;
+  margin: 0 auto 2rem;
+}
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  position: relative;
+}
+
+
+.teamCard {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1rem 1rem 1.1rem;
+  text-align: center;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.06);
+  cursor: pointer;
+  position: relative;
+  transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
+  z-index: 1;
+}
+
+
+.teamCard:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+}
+
+
+.teamCard.active {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;            
+  max-width: 90%;
+  transform: translate(-50%, -50%) scale(1.1);
+  z-index: 1000;           
+  box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+  outline: 2px solid var(--primary);
+  outline-offset: 6px;
+  filter: saturate(1.1);
+  transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
+}
+
+
+.teamCard img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.6rem;
+}
+
+.teamCard h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.teamCard .role {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+
+.teamDetails {
+  text-align: left;
+  margin-top: 0.75rem;
+  animation: fadeIn 200ms ease;
+}
+
+.teamDetails .bio {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.skills {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skills li {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  margin: 0.2rem 0.25rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+
+.highlights {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 12px;
+}
+.highlightCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  height: 210px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.06);
+}
+.highlightCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 280ms ease, filter 280ms ease;
+}
+.highlightCard:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+.highlightCard .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+.highlightCard:hover .overlay {
+  opacity: 1;
+}
+.highlightCard .overlay p {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800; 
+  letter-spacing: 0.3px;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+@media (max-width: 900px) {
+  .highlightsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 680px) {
+  .aboutHero h1 { font-size: 2rem; }
+  .highlightsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

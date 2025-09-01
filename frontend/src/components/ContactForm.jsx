@@ -92,7 +92,7 @@ export default function ContactForm() {
                 maxLength={500}
                 required
               />
-              <small>{form.message.length}/500 characters</small>
+              {/* <small>{form.message.length}/500 characters</small> */}
               <button type="submit" disabled={loading}>
                 {loading ? "Sending..." : "Submit"}
               </button>

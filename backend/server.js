@@ -4,8 +4,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import connectDB from "./config/database.js";
-import errorHandler from './middleware/errorhandler.js';
+import errorHandler from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
+import yogaRoutes from './routes/yogaRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import userProfileRoutes from './routes/userProfileRoutes.js';
 
 
 dotenv.config()//* Loads our env variables.
@@ -48,6 +51,17 @@ app.use('/api/auth', authRoutes);
 //   PUT  http://localhost:5001/api/auth/updatepassword
 //   DELETE http://localhost:5001/api/auth/delete-account   
 //* Example token header: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+
+app.use('/api/yoga-classes', yogaRoutes); // new
+
+
+app.use('/api/bookings', bookingRoutes); // new  
+
+
+app.use('/api/user-profile', userProfileRoutes); // new
+
+
 
 
 

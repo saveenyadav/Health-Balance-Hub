@@ -4,9 +4,9 @@ import ErrorResponse from '../utils/errorResponse.js';
 import User from '../models/User.js';
 import { generateToken } from '../utils/jwt.js';
 
-//* @desc    Register user
-// *@route   POST /api/auth/register
-// *@access  Public
+//* Register user
+//* POST /api/auth/register
+
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 

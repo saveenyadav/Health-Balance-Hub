@@ -1,5 +1,10 @@
-import React from "react";
+import ContactForm from '../components/ContactForm';
 
-export default function Contact() {
-  return <div>Contact Page</div>;
-}
+const Contact = () => (
+  <section className="contact-page">
+    <h2>Contact Us</h2>
+    <ContactForm />
+  </section>
+);
+
+export default Contact;

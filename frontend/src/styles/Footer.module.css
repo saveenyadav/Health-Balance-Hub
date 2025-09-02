@@ -80,6 +80,8 @@
   border-radius: 6px 0 0 6px;
   outline: none;
   transition: border 0.3s;
+  margin: 0%;
+  margin-right: 5px;
 }
 
 .newsletterInput:focus {

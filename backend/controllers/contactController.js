@@ -2,27 +2,43 @@ import Contact from '../models/Contact.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
-//* Submit contact form - Public (matches frontend form exactly)
+//* Submit contact form 
 export const submitContact = asyncHandler(async (req, res, next) => {
+  console.log('Contact form received:', req.body.name, req.body.email);
+  
   const { name, email, phone, subject, message } = req.body;
 
-  //* Create contact submission with simplified fields
-  const contact = await Contact.create({
-    name,
-    email,
-    phone: phone || '', //* Handle optional phone field
-    subject,
-    message
-  });
+  try {
+    //* create contact submission on fields
+    const contact = await Contact.create({
+      name,
+      email,
+      phone: phone || '', //* Handle optional phone field
+      subject,
+      message
+    });
 
-  res.status(201).json({
-    success: true,
-    data: contact,
-    message: 'Contact form submitted successfully. We will get back to you soon!'
-  });
+    console.log('Contact saved to MongoDB:', contact._id);
+    console.log('Saved data:', { 
+      id: contact._id, 
+      name: contact.name, 
+      email: contact.email,
+      createdAt: contact.createdAt 
+    });
+
+    res.status(201).json({
+      success: true,
+      data: contact,
+      message: 'Contact form submitted successfully. We will get back to you soon!'
+    });
+
+  } catch (dbError) {
+    console.error('Database save error:', dbError);
+    return next(new ErrorResponse('Database error occurred while saving contact', 500));
+  }
 });
 
-//* Get all contact submissions - Private (Admin only)
+//* get all contact submissions - Private (Admin only)
 export const getAllContacts = asyncHandler(async (req, res, next) => {
   const contacts = await Contact.find({}).sort({ createdAt: -1 });
 
@@ -33,7 +49,7 @@ export const getAllContacts = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Get single contact submission - Private (Admin only)
+//* get single contact submission - Private (Admin only)
 export const getContact = asyncHandler(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
 
@@ -47,7 +63,7 @@ export const getContact = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Update contact status - Private (Admin only)
+//* update contact status - Private (Admin only)
 export const updateContactStatus = asyncHandler(async (req, res, next) => {
   const { status } = req.body;
 
@@ -67,7 +83,7 @@ export const updateContactStatus = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Delete contact submission - Private (Admin only)
+//* delete contact submission - Private (Admin only)
 export const deleteContact = asyncHandler(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
 
@@ -84,7 +100,7 @@ export const deleteContact = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Search contact submissions - Private (Admin only)
+//* search contact submissions - Private (Admin only)
 export const searchContacts = asyncHandler(async (req, res, next) => {
   const { keyword, status } = req.query;
 
@@ -110,7 +126,7 @@ export const searchContacts = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Get contact statistics - Private (Admin only)
+//* get contact statistics - Private (Admin only)
 export const getContactStats = asyncHandler(async (req, res, next) => {
   const statusStats = await Contact.aggregate([
     {
@@ -135,5 +151,22 @@ export const getContactStats = asyncHandler(async (req, res, next) => {
       unresolved: unresolvedContacts,
       statusBreakdown: statusStats
     }
+  });
+});
+
+//* test database read - Temporary (Development only)
+export const testDatabaseRead = asyncHandler(async (req, res, next) => {
+  const contacts = await Contact.find({}).limit(5).sort({ createdAt: -1 });
+  
+  console.log('Recent contacts in database:', contacts.length);
+  contacts.forEach(contact => {
+    console.log(`- ${contact.name} (${contact.email}) - ${contact.createdAt}`);
+  });
+
+  res.status(200).json({
+    success: true,
+    count: contacts.length,
+    data: contacts,
+    message: 'Database test completed successfully'
   });
 });

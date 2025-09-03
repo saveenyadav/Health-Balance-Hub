@@ -4,16 +4,16 @@ import {
   getAllContacts,
   getContact,
   updateContactStatus,
-  respondToContact,
   deleteContact,
   getContactStats,
   searchContacts
+  // REMOVED: testDatabaseRead (no longer needed)
 } from '../controllers/contactController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//* Public route - No authentication required
+//* Public route - No authentication required (matches frontend)
 router.post('/', submitContact);
 
 //* Protected routes - Admin only
@@ -26,7 +26,6 @@ router.get('/search', searchContacts);
 router.get('/stats', getContactStats);
 router.get('/:id', getContact);
 router.put('/:id/status', updateContactStatus);
-router.put('/:id/respond', respondToContact);
 router.delete('/:id', deleteContact);
 
 export default router;

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
 import connectDB from "./config/database.js";
 import errorHandler from './middleware/errorHandler.js';
 
@@ -30,7 +31,16 @@ connectDB();
 const app = express();
 
 //* Security Middleware
-app.use(cors()); //* CORS (Cross-Origin Resource Sharing)
+//* CORS configuration
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
+
+//* Request logging middleware (development only)
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('combined'));
+}
 app.use(helmet()); //* Security headers protection
 
 //* Body Parser Middleware
@@ -100,8 +110,7 @@ const PORT = process.env.PORT || 5001;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`API Documentation: http://localhost:${PORT}/api`);
-  console.log(`Health Check: http://localhost:${PORT}/api/health`);
+
 });
 
 //* Graceful shutdown handlers

@@ -31,33 +31,17 @@ const contactSchema = new mongoose.Schema({
     required: [true, 'Please provide a message'],
     trim: true,
     maxlength: [1000, 'Message cannot exceed 1000 characters']
-  },
-  category: {
-    type: String,
-    enum: ['general', 'booking', 'complaint', 'suggestion', 'other'],
-    default: 'general'
-  },
+  }, 
+  // had to remove these to match frontend form
+  //*  category field - keeping it simple for frontend compatibility
+  //* priority field - not needed for basic contact form
+  //* assignedTo field - not needed for basic contact form
+  //*  response field - not needed for basic contact form
+
   status: {
     type: String,
     enum: ['new', 'in-progress', 'resolved', 'closed'],
     default: 'new'
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high', 'urgent'],
-    default: 'medium'
-  },
-  assignedTo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  response: {
-    message: String,
-    respondedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    respondedAt: Date
   }
 }, {
   timestamps: true
@@ -65,5 +49,4 @@ const contactSchema = new mongoose.Schema({
 
 export default mongoose.model('Contact', contactSchema);
 
-
-//* this is the contact form schema with status tracking
+//* Simplified contact form schema - matches frontend exactly

@@ -2,18 +2,17 @@ import Contact from '../models/Contact.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 
-//* Submit contact form - Public
+//* Submit contact form - Public (matches frontend form exactly)
 export const submitContact = asyncHandler(async (req, res, next) => {
-  const { name, email, phone, subject, message, category } = req.body;
+  const { name, email, phone, subject, message } = req.body;
 
-  //* Create contact submission
+  //* Create contact submission with simplified fields
   const contact = await Contact.create({
     name,
     email,
-    phone,
+    phone: phone || '', //* Handle optional phone field
     subject,
-    message,
-    category: category || 'general'
+    message
   });
 
   res.status(201).json({
@@ -25,20 +24,7 @@ export const submitContact = asyncHandler(async (req, res, next) => {
 
 //* Get all contact submissions - Private (Admin only)
 export const getAllContacts = asyncHandler(async (req, res, next) => {
-  //* Build query for filtering
-  let query = {};
-
-  //* Add filters if provided
-  if (req.query.status) query.status = req.query.status;
-  if (req.query.category) query.category = req.query.category;
-  if (req.query.priority) query.priority = req.query.priority;
-  if (req.query.assignedTo) query.assignedTo = req.query.assignedTo;
-
-  //* Execute query with population and sorting
-  const contacts = await Contact.find(query)
-    .populate('assignedTo', 'name email')
-    .populate('response.respondedBy', 'name email')
-    .sort({ createdAt: -1 });
+  const contacts = await Contact.find({}).sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,
@@ -49,9 +35,7 @@ export const getAllContacts = asyncHandler(async (req, res, next) => {
 
 //* Get single contact submission - Private (Admin only)
 export const getContact = asyncHandler(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id)
-    .populate('assignedTo', 'name email')
-    .populate('response.respondedBy', 'name email');
+  const contact = await Contact.findById(req.params.id);
 
   if (!contact) {
     return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
@@ -65,7 +49,7 @@ export const getContact = asyncHandler(async (req, res, next) => {
 
 //* Update contact status - Private (Admin only)
 export const updateContactStatus = asyncHandler(async (req, res, next) => {
-  const { status, priority, assignedTo } = req.body;
+  const { status } = req.body;
 
   let contact = await Contact.findById(req.params.id);
 
@@ -73,64 +57,13 @@ export const updateContactStatus = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
   }
 
-  //* Update fields if provided
   if (status) contact.status = status;
-  if (priority) contact.priority = priority;
-  if (assignedTo) contact.assignedTo = assignedTo;
-
   await contact.save();
-
-  //* Populate for response
-  await contact.populate([
-    { path: 'assignedTo', select: 'name email' },
-    { path: 'response.respondedBy', select: 'name email' }
-  ]);
 
   res.status(200).json({
     success: true,
     data: contact,
     message: 'Contact status updated successfully'
-  });
-});
-
-//* Respond to contact submission - Private (Admin only)
-export const respondToContact = asyncHandler(async (req, res, next) => {
-  const { responseMessage } = req.body;
-
-  if (!responseMessage) {
-    return next(new ErrorResponse('Please provide a response message', 400));
-  }
-
-  let contact = await Contact.findById(req.params.id);
-
-  if (!contact) {
-    return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
-  }
-
-  //* Add response
-  contact.response = {
-    message: responseMessage,
-    respondedBy: req.user.id,
-    respondedAt: new Date()
-  };
-
-  //* Update status to resolved if it's still new or in-progress
-  if (contact.status === 'new' || contact.status === 'in-progress') {
-    contact.status = 'resolved';
-  }
-
-  await contact.save();
-
-  //* Populate for response
-  await contact.populate([
-    { path: 'assignedTo', select: 'name email' },
-    { path: 'response.respondedBy', select: 'name email' }
-  ]);
-
-  res.status(200).json({
-    success: true,
-    data: contact,
-    message: 'Response added successfully'
   });
 });
 
@@ -151,9 +84,34 @@ export const deleteContact = asyncHandler(async (req, res, next) => {
   });
 });
 
+//* Search contact submissions - Private (Admin only)
+export const searchContacts = asyncHandler(async (req, res, next) => {
+  const { keyword, status } = req.query;
+
+  let searchQuery = {};
+
+  if (keyword) {
+    searchQuery.$or = [
+      { name: { $regex: keyword, $options: 'i' } },
+      { email: { $regex: keyword, $options: 'i' } },
+      { subject: { $regex: keyword, $options: 'i' } },
+      { message: { $regex: keyword, $options: 'i' } }
+    ];
+  }
+
+  if (status) searchQuery.status = status;
+
+  const contacts = await Contact.find(searchQuery).sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: contacts.length,
+    data: contacts
+  });
+});
+
 //* Get contact statistics - Private (Admin only)
 export const getContactStats = asyncHandler(async (req, res, next) => {
-  //* Get counts by status
   const statusStats = await Contact.aggregate([
     {
       $group: {
@@ -163,27 +121,6 @@ export const getContactStats = asyncHandler(async (req, res, next) => {
     }
   ]);
 
-  //* Get counts by category
-  const categoryStats = await Contact.aggregate([
-    {
-      $group: {
-        _id: '$category',
-        count: { $sum: 1 }
-      }
-    }
-  ]);
-
-  //* Get counts by priority
-  const priorityStats = await Contact.aggregate([
-    {
-      $group: {
-        _id: '$priority',
-        count: { $sum: 1 }
-      }
-    }
-  ]);
-
-  //* Get total counts
   const totalContacts = await Contact.countDocuments();
   const newContacts = await Contact.countDocuments({ status: 'new' });
   const unresolvedContacts = await Contact.countDocuments({ 
@@ -196,43 +133,7 @@ export const getContactStats = asyncHandler(async (req, res, next) => {
       total: totalContacts,
       new: newContacts,
       unresolved: unresolvedContacts,
-      statusBreakdown: statusStats,
-      categoryBreakdown: categoryStats,
-      priorityBreakdown: priorityStats
+      statusBreakdown: statusStats
     }
-  });
-});
-
-//* Search contact submissions - Private (Admin only)
-export const searchContacts = asyncHandler(async (req, res, next) => {
-  const { keyword, status, category, priority } = req.query;
-
-  //* Build search query
-  let searchQuery = {};
-
-  //* Add text search if keyword provided
-  if (keyword) {
-    searchQuery.$or = [
-      { name: { $regex: keyword, $options: 'i' } },
-      { email: { $regex: keyword, $options: 'i' } },
-      { subject: { $regex: keyword, $options: 'i' } },
-      { message: { $regex: keyword, $options: 'i' } }
-    ];
-  }
-
-  //* Add filters
-  if (status) searchQuery.status = status;
-  if (category) searchQuery.category = category;
-  if (priority) searchQuery.priority = priority;
-
-  const contacts = await Contact.find(searchQuery)
-    .populate('assignedTo', 'name email')
-    .populate('response.respondedBy', 'name email')
-    .sort({ createdAt: -1 });
-
-  res.status(200).json({
-    success: true,
-    count: contacts.length,
-    data: contacts
   });
 });

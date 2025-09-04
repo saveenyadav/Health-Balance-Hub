@@ -1,41 +1,58 @@
-
 import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import User from '../models/User.js';
 import { generateToken } from '../utils/jwt.js';
 
-//* Register user
-//* POST /api/auth/register
-
+//* register user
+//* post /api/auth/register
+//* public
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
-  //* Validation
+  //* validation
   if (!name || !email || !password) {
-    return next(new ErrorResponse('Please provide name, email and password', 400));
+    return next(new ErrorResponse('please provide name, email and password', 400));
   }
 
-  //* Checking if user already exists
+  //* check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return next(new ErrorResponse('User already exists with this email', 400));
+    return next(new ErrorResponse('user already exists with this email', 400));
   }
 
-  //* Create user (password will be hashed by User model pre-save middleware)
+  //* get ip address and user agent for security tracking (same pattern as contact)
+  const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+  const userAgent = req.get('User-Agent') || 'Unknown';
+
+  //* create user (password will be hashed by user model pre-save middleware)
   const user = await User.create({
     name,
     email,
-    password
+    password,
+    ipAddress,
+    userAgent
   });
 
-  //* Generate token
+  //* generate token
   const token = generateToken({ id: user._id });
 
-  //* Set cookie and respond
+  //* enhanced logging (same pattern as contact controller)
+  console.log('user registered:', name, email);
+  console.log('user saved to mongodb:', user._id);
+  console.log('security info - ip:', ipAddress, 'user agent:', userAgent.substring(0, 50));
+  console.log('saved data:', {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt
+  });
+
+  //* set cookie and respond
   const options = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict'
   };
 
@@ -43,7 +60,7 @@ export const register = asyncHandler(async (req, res, next) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      message: 'User registered successfully',
+      message: 'user registered successfully',
       token,
       user: {
         id: user._id,
@@ -54,33 +71,52 @@ export const register = asyncHandler(async (req, res, next) => {
     });
 });
 
-//* Login user
-//* POST /api/auth/login
-//* Public
+//* login user
+//* post /api/auth/login
+//* public
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  //* Validation
+  //* validation
   if (!email || !password) {
-    return next(new ErrorResponse('Please provide email and password', 400));
+    return next(new ErrorResponse('please provide email and password', 400));
   }
 
-  //* Checking for user (include password for comparison)
+  //* check for user (include password for comparison)
   const user = await User.findOne({ email }).select('+password');
   if (!user) {
-    return next(new ErrorResponse('Invalid credentials', 401));
+    return next(new ErrorResponse('invalid credentials', 401));
   }
 
-  //* Check if password matches
+  //* check if password matches
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    return next(new ErrorResponse('Invalid credentials', 401));
+    return next(new ErrorResponse('invalid credentials', 401));
   }
 
-  //* Generating token
+  //* update last login and security info (same pattern as contact)
+  const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+  const userAgent = req.get('User-Agent') || 'Unknown';
+  
+  user.lastLogin = new Date();
+  user.ipAddress = ipAddress;
+  user.userAgent = userAgent;
+  await user.save();
+
+  //* generate token
   const token = generateToken({ id: user._id });
 
-  //* Setting cookie and respond
+  //* enhanced logging (same pattern as contact controller)
+  console.log('user logged in:', user.name, user.email);
+  console.log('security info - ip:', ipAddress, 'user agent:', userAgent.substring(0, 50));
+  console.log('login data:', {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    lastLogin: user.lastLogin
+  });
+
+  //* set cookie and respond
   const options = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
     httpOnly: true,
@@ -92,37 +128,42 @@ export const login = asyncHandler(async (req, res, next) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      message: 'Logged in successfully',
+      message: 'logged in successfully',
       token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        profile: user.profile,
+        lastLogin: user.lastLogin
       }
     });
 });
 
-//* Logout user / clear cookie
-//* POST /api/auth/logout
-//* Private
+//* logout user / clear cookie
+//* post /api/auth/logout
+//* private
 export const logout = asyncHandler(async (req, res, next) => {
+  //* log logout activity
+  console.log('user logged out:', req.user.id);
+
   res.cookie('token', 'none', {
-    expires: new Date(Date.now() + 10 * 1000), // 10 seconds
+    expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
   });
 
   res.status(200).json({
     success: true,
-    message: 'Logged out successfully'
+    message: 'logged out successfully'
   });
 });
 
-//* Get current logged in user
-//* GET /api/auth/user-profile
-//* Private
+//* get current logged in user
+//* get /api/auth/user-profile
+//* private
 export const getMe = asyncHandler(async (req, res, next) => {
-  //* User is already available in req.user from protect middleware
+  //* user is already available in req.user from protect middleware
   const user = req.user;
 
   res.status(200).json({
@@ -133,14 +174,15 @@ export const getMe = asyncHandler(async (req, res, next) => {
       email: user.email,
       role: user.role,
       profile: user.profile,
-      createdAt: user.createdAt
+      createdAt: user.createdAt,
+      lastLogin: user.lastLogin
     }
   });
 });
 
-//* Update user details
-//* PUT /api/auth/updatedetails
-//* Private
+//* update user details
+//* put /api/auth/updatedetails
+//* private
 export const updateDetails = asyncHandler(async (req, res, next) => {
   const fieldsToUpdate = {
     name: req.body.name,
@@ -152,9 +194,12 @@ export const updateDetails = asyncHandler(async (req, res, next) => {
     runValidators: true
   });
 
+  //* enhanced logging
+  console.log('user details updated:', user.name, user.email);
+
   res.status(200).json({
     success: true,
-    message: 'User details updated successfully',
+    message: 'user details updated successfully',
     user: {
       id: user._id,
       name: user.name,
@@ -164,24 +209,55 @@ export const updateDetails = asyncHandler(async (req, res, next) => {
   });
 });
 
-//* Update password
-//* PUT /api/auth/updatepassword
-//* Private
+//* update user profile
+//* put /api/auth/updateprofile
+//* private
+export const updateProfile = asyncHandler(async (req, res, next) => {
+  const { profile } = req.body;
+
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { profile: { ...req.user.profile, ...profile } },
+    { new: true, runValidators: true }
+  );
+
+  //* enhanced logging
+  console.log('user profile updated:', user.name, user.email);
+
+  res.status(200).json({
+    success: true,
+    message: 'profile updated successfully',
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      profile: user.profile
+    }
+  });
+});
+
+//* update password
+//* put /api/auth/updatepassword
+//* private
 export const updatePassword = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
-  //* Check current password
+  //* check current password
   if (!(await user.comparePassword(req.body.currentPassword))) {
-    return next(new ErrorResponse('Password is incorrect', 401));
+    return next(new ErrorResponse('password is incorrect', 401));
   }
 
   user.password = req.body.newPassword;
   await user.save();
 
-  //* Generating new token
+  //* generate new token
   const token = generateToken({ id: user._id });
 
-  //* Set cookie and respond
+  //* enhanced logging
+  console.log('password updated for user:', user.name, user.email);
+
+  //* set cookie and respond
   const options = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
     httpOnly: true,
@@ -193,38 +269,38 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      message: 'Password updated successfully',
+      message: 'password updated successfully',
       token
     });
 });
 
-
-
-
-//* Delete user account
-//* DELETE /api/auth/delete-account
-//* Private
+//* delete user account
+//* delete /api/auth/delete-account
+//* private
 export const deleteAccount = asyncHandler(async (req, res, next) => {
   const { password } = req.body;
 
-  //* Require password confirmation for security
+  //* require password confirmation for security
   if (!password) {
-    return next(new ErrorResponse('Please provide your password to confirm account deletion', 400));
+    return next(new ErrorResponse('please provide your password to confirm account deletion', 400));
   }
 
-  //* Get user with password for verification
+  //* get user with password for verification
   const user = await User.findById(req.user.id).select('+password');
 
-  //* Verify password before deletion
+  //* verify password before deletion
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
-    return next(new ErrorResponse('Incorrect password. Account deletion cancelled.', 401));
+    return next(new ErrorResponse('incorrect password. account deletion cancelled', 401));
   }
 
-  //* Delete the user account
+  //* enhanced logging before deletion
+  console.log('account deleted:', user.name, user.email, 'user id:', user._id);
+
+  //* delete the user account
   await User.findByIdAndDelete(req.user.id);
 
-  //* Clear cookie
+  //* clear cookie
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
@@ -232,7 +308,9 @@ export const deleteAccount = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: 'Account deleted successfully. We\'re sorry to see you go!',
+    message: 'account deleted successfully. we\'re sorry to see you go!',
     data: {}
   });
 });
+
+//* enhanced authentication controller with security tracking --- same as in contact 

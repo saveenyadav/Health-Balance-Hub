@@ -66,7 +66,9 @@ export default function ContactForm() {
         <div className="contact-container">
           {/* Left side - Contact Form */}
           <div className="contact-card">
-            <h2>Contact Us</h2>
+
+            <h2>Contact Us</h2> 
+
             <form onSubmit={handleSubmit}>
               {/* Name field - fixed to matche backend validation */}
               <input
@@ -108,16 +110,31 @@ export default function ContactForm() {
                 required
               />
               
-              {/* Message field - also fixed to match backend validation */}
-              <textarea
-                name="message"
-                placeholder="Enter your message"
-                value={form.message}
-                onChange={handleChange}
-                maxLength={1000} //* Backend validation limit
-                required
-              />
-              <small>{form.message.length}/1000 characters</small>
+                          {/* Message field - TEMPORARILY COMMENTED OUT TO SHOW FRIEND CHANGES
+                            <textarea
+                              name="message"
+                              placeholder="Enter your message"
+                              value={form.message}
+                              onChange={handleChange}
+                              maxLength={1000} 
+                              required
+                            />
+                            <small>{form.message.length}/1000 characters</small>
+              */}
+
+              {/* Changes by Okile - better aligned and positioned */}
+              <div className="message-field-container">
+                <textarea
+                  name="message"
+                  placeholder="Enter your message"
+                  value={form.message}
+                  onChange={handleChange}
+                  maxLength={1000}
+                  rows={5}
+                  required
+                />
+                <small className="character-counter">{form.message.length}/1000 characters</small>
+              </div>
               
               <button type="submit" disabled={loading}>
                 {loading ? "Sending..." : "Submit"}

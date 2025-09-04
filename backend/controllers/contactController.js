@@ -1,172 +1,260 @@
 import Contact from '../models/Contact.js';
-import ErrorResponse from '../utils/errorResponse.js';
-import asyncHandler from '../middleware/asyncHandler.js';
 
-//* Submit contact form 
-export const submitContact = asyncHandler(async (req, res, next) => {
-  console.log('Contact form received:', req.body.name, req.body.email);
-  
-  const { name, email, phone, subject, message } = req.body;
-
+// Submit contact form (public route)
+export const submitContact = async (req, res) => {
   try {
-    //* create contact submission on fields
+    const { name, email, phone, subject, message } = req.body;
+    
+    // Spam prevention - check for recent submissions
+    const hasRecentSubmission = await Contact.checkRecentSubmission(email, 30);
+    if (hasRecentSubmission) {
+      return res.status(429).json({
+        success: false,
+        error: 'Please wait 30 minutes before submitting another contact form.'
+      });
+    }
+    
+    // Get IP address and user agent for security tracking
+    const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+    const userAgent = req.get('User-Agent') || 'Unknown';
+    
+    // Create contact with security tracking
     const contact = await Contact.create({
       name,
       email,
-      phone: phone || '', //* Handle optional phone field
+      phone,
       subject,
-      message
+      message,
+      ipAddress,
+      userAgent
     });
 
+    // Enhanced logging
+    console.log('Contact form received:', name, email);
     console.log('Contact saved to MongoDB:', contact._id);
-    console.log('Saved data:', { 
-      id: contact._id, 
-      name: contact.name, 
+    console.log('Security info - IP:', ipAddress, 'User Agent:', userAgent.substring(0, 50));
+    console.log('Saved data:', {
+      id: contact._id,
+      name: contact.name,
       email: contact.email,
-      createdAt: contact.createdAt 
+      createdAt: contact.createdAt
     });
 
     res.status(201).json({
       success: true,
-      data: contact,
-      message: 'Contact form submitted successfully. We will get back to you soon!'
+      message: 'Message sent successfully!'
     });
 
-  } catch (dbError) {
-    console.error('Database save error:', dbError);
-    return next(new ErrorResponse('Database error occurred while saving contact', 500));
+  } catch (error) {
+    console.error('Contact submission error:', error);
+    
+    // Handle validation errors from enhanced Contact model
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        error: errors[0] // Send first error to match frontend expectation
+      });
+    }
+
+    // Handle duplicate key errors (if you add unique constraints later)
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        error: 'A contact form with this email was already submitted recently.'
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: 'Error saving contact form. Please try again.'
+    });
   }
-});
+};
 
-//* get all contact submissions - Private (Admin only)
-export const getAllContacts = asyncHandler(async (req, res, next) => {
-  const contacts = await Contact.find({}).sort({ createdAt: -1 });
+// Get all contacts (admin only)
+export const getAllContacts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-  res.status(200).json({
-    success: true,
-    count: contacts.length,
-    data: contacts
-  });
-});
+    const contacts = await Contact.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('-ipAddress -userAgent'); // Hide sensitive security data from admin view
 
-//* get single contact submission - Private (Admin only)
-export const getContact = asyncHandler(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
+    const total = await Contact.countDocuments();
 
-  if (!contact) {
-    return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
-  }
-
-  res.status(200).json({
-    success: true,
-    data: contact
-  });
-});
-
-//* update contact status - Private (Admin only)
-export const updateContactStatus = asyncHandler(async (req, res, next) => {
-  const { status } = req.body;
-
-  let contact = await Contact.findById(req.params.id);
-
-  if (!contact) {
-    return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
-  }
-
-  if (status) contact.status = status;
-  await contact.save();
-
-  res.status(200).json({
-    success: true,
-    data: contact,
-    message: 'Contact status updated successfully'
-  });
-});
-
-//* delete contact submission - Private (Admin only)
-export const deleteContact = asyncHandler(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-
-  if (!contact) {
-    return next(new ErrorResponse(`Contact submission not found with id of ${req.params.id}`, 404));
-  }
-
-  await contact.deleteOne();
-
-  res.status(200).json({
-    success: true,
-    data: {},
-    message: 'Contact submission deleted successfully'
-  });
-});
-
-//* search contact submissions - Private (Admin only)
-export const searchContacts = asyncHandler(async (req, res, next) => {
-  const { keyword, status } = req.query;
-
-  let searchQuery = {};
-
-  if (keyword) {
-    searchQuery.$or = [
-      { name: { $regex: keyword, $options: 'i' } },
-      { email: { $regex: keyword, $options: 'i' } },
-      { subject: { $regex: keyword, $options: 'i' } },
-      { message: { $regex: keyword, $options: 'i' } }
-    ];
-  }
-
-  if (status) searchQuery.status = status;
-
-  const contacts = await Contact.find(searchQuery).sort({ createdAt: -1 });
-
-  res.status(200).json({
-    success: true,
-    count: contacts.length,
-    data: contacts
-  });
-});
-
-//* get contact statistics - Private (Admin only)
-export const getContactStats = asyncHandler(async (req, res, next) => {
-  const statusStats = await Contact.aggregate([
-    {
-      $group: {
-        _id: '$status',
-        count: { $sum: 1 }
+    res.status(200).json({
+      success: true,
+      data: contacts,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
       }
+    });
+  } catch (error) {
+    console.error('Get contacts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error fetching contacts'
+    });
+  }
+};
+
+// Get single contact (admin only)
+export const getContact = async (req, res) => {
+  try {
+    const contact = await Contact.findById(req.params.id);
+    
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        error: 'Contact not found'
+      });
     }
-  ]);
 
-  const totalContacts = await Contact.countDocuments();
-  const newContacts = await Contact.countDocuments({ status: 'new' });
-  const unresolvedContacts = await Contact.countDocuments({ 
-    status: { $in: ['new', 'in-progress'] } 
-  });
+    res.status(200).json({
+      success: true,
+      data: contact
+    });
+  } catch (error) {
+    console.error('Get contact error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error fetching contact'
+    });
+  }
+};
 
-  res.status(200).json({
-    success: true,
-    data: {
-      total: totalContacts,
-      new: newContacts,
-      unresolved: unresolvedContacts,
-      statusBreakdown: statusStats
+// Update contact status (admin only)
+export const updateContactStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        error: 'Contact not found'
+      });
     }
-  });
-});
 
-//* test database read - Temporary (Development only)
-export const testDatabaseRead = asyncHandler(async (req, res, next) => {
-  const contacts = await Contact.find({}).limit(5).sort({ createdAt: -1 });
-  
-  console.log('Recent contacts in database:', contacts.length);
-  contacts.forEach(contact => {
-    console.log(`- ${contact.name} (${contact.email}) - ${contact.createdAt}`);
-  });
+    res.status(200).json({
+      success: true,
+      data: contact
+    });
+  } catch (error) {
+    console.error('Update contact error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error updating contact'
+    });
+  }
+};
 
-  res.status(200).json({
-    success: true,
-    count: contacts.length,
-    data: contacts,
-    message: 'Database test completed successfully'
-  });
-});
+// Delete contact (admin only)
+export const deleteContact = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.id);
+
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        error: 'Contact not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Contact deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete contact error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error deleting contact'
+    });
+  }
+};
+
+// Get contact statistics (admin only)
+export const getContactStats = async (req, res) => {
+  try {
+    const stats = await Contact.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const totalContacts = await Contact.countDocuments();
+    const todayContacts = await Contact.countDocuments({
+      createdAt: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0))
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total: totalContacts,
+        today: todayContacts,
+        byStatus: stats
+      }
+    });
+  } catch (error) {
+    console.error('Get stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error fetching statistics'
+    });
+  }
+};
+
+// Search contacts (admin only)
+export const searchContacts = async (req, res) => {
+  try {
+    const { q, status } = req.query;
+    const query = {};
+
+    if (q) {
+      query.$or = [
+        { name: { $regex: q, $options: 'i' } },
+        { email: { $regex: q, $options: 'i' } },
+        { subject: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    if (status) {
+      query.status = status;
+    }
+
+    const contacts = await Contact.find(query)
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .select('-ipAddress -userAgent'); // Hide sensitive data
+
+    res.status(200).json({
+      success: true,
+      data: contacts
+    });
+  } catch (error) {
+    console.error('Search contacts error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error searching contacts'
+    });
+  }
+};

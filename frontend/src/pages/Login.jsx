@@ -34,6 +34,7 @@ function Login() {
       if (result.success) {
         setError("");
         console.log('login successful, redirecting to profile...');
+        console.log('JWT Token generated:', result.token);
 
         //========00000000000000
         //navigate("/profile"); //* redirect to profile page after successful login

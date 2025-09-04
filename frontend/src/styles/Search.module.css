@@ -6,14 +6,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center;     
+  justify-content: flex-start;
+  align-items: center;
   text-align: center;
   position: relative;
   padding: 2rem;
+  padding-top: 250px;
   overflow-x: hidden;
 }
-
 
 .searchPage::before {
   content: "";
@@ -24,12 +24,12 @@
   z-index: 0;
 }
 
-
 .hero {
   position: relative;
   z-index: 1;
   max-width: 600px;
   width: 100%;
+  
 }
 
 .hero h1 {
@@ -40,7 +40,6 @@
   text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
 }
 
-
 .searchBar {
   display: flex;
   justify-content: center;
@@ -50,7 +49,6 @@
   position: relative;
   z-index: 1;
 }
-
 
 .inputWrapper {
   position: relative;
@@ -65,12 +63,13 @@
   transform: translateY(-50%);
   color: black;
   pointer-events: none;
+  z-index: 2;
   font-size: 1rem;
 }
 
 .inputWrapper input {
   width: 100%;
-  padding: 0.8rem 1rem 0.8rem 2.5rem; 
+  padding: 0.8rem 1rem 0.8rem 2.5rem;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -79,16 +78,17 @@
 }
 
 .inputWrapper input:focus {
+  background-color: #ffffff; /* stay white on focus */
+  color: #000000;
   transform: scale(1.02);
   box-shadow: 0 0 8px #906137;
 }
 
-
 .searchBar button {
   background: #906137;
   border: none;
-  padding: 0.6rem 1.5rem;
-  margin-bottom: 0.8rem;
+  padding: 0.9rem 1.6rem;
+  margin-bottom: 1rem;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
@@ -99,7 +99,6 @@
   background: #805ad5;
   transform: scale(1.05);
 }
-
 
 .results {
   display: grid;
@@ -121,7 +120,6 @@
   cursor: pointer;
 }
 
-
 @keyframes popUp {
   0% {
     opacity: 0;
@@ -132,8 +130,6 @@
     transform: scale(1);
   }
 }
-
-
 
 .resultCard:hover {
   transform: translateY(-5px);
@@ -156,14 +152,12 @@
   font-weight: bold;
 }
 
-
 .noResults {
   text-align: center;
   font-size: 1rem;
   color: #ccc;
   margin-top: 2rem;
 }
-
 
 @media (max-width: 900px) {
   .results {

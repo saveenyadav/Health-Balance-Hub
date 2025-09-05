@@ -4,25 +4,37 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]); 
 
-  // login function
-  const login = (userData) => {
-    setUser(userData);
-    return true;
+ 
+  const login = ({ email, password }) => {
+    const existingUser = users.find(
+      (u) => u.email === email && u.password === password
+    );
+    if (existingUser) {
+      setUser(existingUser);
+      return true;
+    } else {
+      return false; 
+    }
   };
 
-  // logout function
+  
   const logout = () => {
     setUser(null);
   };
 
-  // register function
-  const register = (formData) => {
-    // In a real app, this is where you would call your backend API
-    console.log("Registering user:", formData);
+  
+  const register = ({ email, password }) => {
+    const existingUser = users.find((u) => u.email === email);
+    if (existingUser) {
+      return false; 
+    }
 
-    // For demo: just pretend registration worked
-    return true; // success
+    const newUser = { email, password };
+    setUsers([...users, newUser]);
+    console.log("Registered user:", newUser);
+    return true;
   };
 
   return (

@@ -8,8 +8,6 @@ import "./Register.css";
 
 function Register() {
   const { register } = useAuth();
-  
-  
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();

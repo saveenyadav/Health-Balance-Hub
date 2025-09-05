@@ -5,17 +5,19 @@ import "./Login.css";
 
 function Login() {
   const { login } = useAuth();
-  
-  
-  const [form, setForm] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState(""); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const success = login(form);
     if (success) {
-      alert("✅ Logged in successfully!");
+      setError("");
       navigate("/");
+    } else {
+      setError("❌ Please create an account to log in.");
     }
   };
 
@@ -27,20 +29,27 @@ function Login() {
           <p className="login-link">
             Don’t have an account? <Link to="/register">Register</Link>
           </p>
+
+          {error && <p className="error-message">{error}</p>} {/* show error if any */}
+
           <form onSubmit={handleSubmit}>
             <input
               type="email"
               placeholder="Email"
               required
+              value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
             <input
               type="password"
               placeholder="Password"
               required
+              value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
-            <button type="submit" className="primary-btn">Log in</button>
+            <button type="submit" className="primary-btn">
+              Log in
+            </button>
           </form>
         </div>
       </div>

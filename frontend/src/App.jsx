@@ -8,6 +8,8 @@ import Blogs from "./pages/Blogs";
 import Workout from "./pages/Workout";
 import Nutrition from "./pages/Nutrition";
 import Mindset from "./pages/Mindset";
+import Membership from "./pages/Membership.jsx";
+import Checkout from "./pages/Checkout.jsx";
 import Contact from "./pages/Contact";
 import Search from "./pages/Search";
 import Login from "./pages/Login";
@@ -33,6 +35,8 @@ function App() {
             <Route path="/workout" element={<Workout />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/mindset" element={<Mindset />} />
+            <Route path="/membership" element={<Membership />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/search" element={<Search />} />
             <Route path="/login" element={<Login />} />

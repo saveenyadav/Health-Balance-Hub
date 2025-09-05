@@ -33,6 +33,7 @@ function Header() {
           <Link to="/workout">Workout</Link>
           <Link to="/nutrition">Nutrition</Link>
           <Link to="/mindset">Mindset</Link>
+          <Link to="/membership">Membership</Link>
           <Link to="/contact">Contact</Link>
         </nav>
 

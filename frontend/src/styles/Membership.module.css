@@ -1,0 +1,232 @@
+.membershipPage {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  color: #333;
+}
+
+/* Hero Section */
+.hero {
+  margin-bottom: 60px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Plans Section */
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.planCard {
+  background: lavenderblush;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+  min-height: 700px; /* ensure equal height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.planCard:hover {
+  transform: translateY(-6px);
+}
+
+.planCard h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.price {
+  font-size: 1.4rem;
+  color: palevioletred;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.planFeatures p {
+  font-size: 1rem;
+  margin: 10px 0;
+  display: flex;
+  text-align: left;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  gap: 10px;
+  color: #444;
+}
+
+.planFeatures p::before {
+  content: "➤";
+  color: palevioletred; 
+  font-size: 0.9rem;
+  margin-right: 10px;
+}
+
+.planFeatures i {
+  color: #16a34a;
+  font-size: 1.2rem;
+}
+
+/* CTA Button */
+.ctaButton {
+  background: palevioletred;
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  align-self: center;
+}
+
+.ctaButton:hover {
+  background: green;
+}
+
+/* Why Join Us */
+.benefits {
+  margin: 80px 0;
+}
+
+.benefits h2 {
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.benefitGrid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.benefitBox {
+  max-width: 250px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.benefitBox::before {
+  content: "✔";
+  color: #16a34a;
+  font-size: 1.2rem;
+}
+
+/* Perks Section */
+.perksSection {
+  background: #f9fafb;
+  padding: 60px 30px;
+  border-radius: 20px;
+  margin-top: 80px;
+  text-align: center;
+}
+
+.perksSection h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #111;
+}
+
+.perksSection p {
+  max-width: 700px;
+  margin: 0 auto 30px;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+.perksButton {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.perksButton:hover {
+  background: #15803d;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .plansGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards in a row */
+  }
+}
+
+@media (max-width: 768px) {
+  .plansGrid {
+    grid-template-columns: 1fr; /* 1 card in a row */
+  }
+
+  .planCard {
+    min-height: auto;
+    text-align: center;
+  }
+
+  .benefitBox {
+    max-width: 100%;
+  }
+}
+
+/* Highlighted Plans */
+.highlightedPlan {
+  border: 3px solid #16a34a;
+  position: relative;
+  box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
+}
+
+/* Removed perksBadge since we don't show it anymore */
+
+/* Perks List */
+.perksList {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 1.1rem;
+  color: #333;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}

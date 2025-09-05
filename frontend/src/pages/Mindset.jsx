@@ -110,7 +110,7 @@ function Mindset() {
               </tr>
               <tr>
                 <td>Wednesday</td>
-                <td>Group Coaching</td>
+                <td>Meditation Coaching</td>
                 <td>2:00 PM</td>
               </tr>
               <tr>
@@ -128,6 +128,38 @@ function Mindset() {
         <div className={styles.container}>
           <h2>Resources</h2>
           <p>Explore our collection of tools to support your growth journey.</p>
+          <div className={styles.cardGrid}>
+            <div className={styles.card}>
+              <div className={styles.icon}>📘</div>
+              <h3>E-books</h3>
+              <p>Download free guides on mindfulness, motivation, and personal growth.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.icon}>🎧</div>
+              <h3>Podcasts</h3>
+              <p>Listen to inspiring talks and interviews with mindset experts.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.icon}>🎥</div>
+              <h3>Videos</h3>
+              <p>Watch tutorials and guided meditation sessions anytime, anywhere.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.icon}>📝</div>
+              <h3>Worksheets</h3>
+              <p>Practice journaling, goal-setting, and reflection with our worksheets.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.icon}>📰</div>
+              <h3>Articles</h3>
+              <p>Read insightful articles on personal growth, motivation, and mindset strategies.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.icon}>📄</div>
+              <h3>Templates</h3>
+              <p>Use ready-to-go templates for goal-setting, planning, and self-assessment.</p>
+            </div>
+          </div>
         </div>
       </section>
 

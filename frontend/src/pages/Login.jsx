@@ -36,7 +36,7 @@ function Login() {
         console.log('login successful, redirecting to profile...');
         console.log('JWT Token generated:', result.token);
 
-        //========00000000000000
+        //========0000000000000  WE SHALL ENABLED WHEN PROFILE PAGE IS READY 0000000000000========//
         //navigate("/profile"); //* redirect to profile page after successful login
 
         navigate("/"); //* temporary redirect to home until profile page is created

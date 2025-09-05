@@ -1,0 +1,105 @@
+.profile-page {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-btn {
+  background: #e63946;
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.profile-info {
+  margin-top: 20px;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.save-btn, .cancel-btn, .edit-btn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #2d6a4f;
+  color: #fff;
+}
+
+.cancel-btn {
+  background: #aaa;
+  color: #fff;
+}
+
+.edit-btn {
+  background: #0077b6;
+  color: #fff;
+}
+
+.upgrade-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #805ad5;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.upgrade-btn:hover {
+  background: #6b46c1;
+}
+
+
+.plan-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+
+.plan-badge.trial {
+  background: #ffd166;
+  color: #333;
+}
+
+.plan-badge.basic {
+  background: #06d6a0;
+  color: #fff;
+}
+
+.plan-badge.pro {
+  background: #6b46c1;
+  color: #fff;
+}
+
+.profile-stats {
+  margin-top: 20px;
+  text-align: left;
+}

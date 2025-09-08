@@ -13,13 +13,17 @@ function Register() {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const success = register(form);
-    if (success) {
-      alert("✅ Registration successful! Please log in.");
-      navigate("/login");
-    }
-  };
+  e.preventDefault();
+  const fullName = `${form.firstName} ${form.lastName}`;
+  const success = register({ 
+    ...form, 
+    name: fullName   // store full name
+  });
+  if (success) {
+    alert("✅ Registration successful! Please log in.");
+    navigate("/login");
+  }
+};
 
   return (
     <div className="register-page">

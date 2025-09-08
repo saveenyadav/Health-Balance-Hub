@@ -16,11 +16,12 @@ const router = express.Router();
 //* public routes (no authentication required)
 router.post('/register', register); //? means anyone can register
 router.post('/login', login); //? means anyone can login
+router.post('/logout', logout); //? logout should work even with expired/invalid tokens
+router.get('/logout', logout); //? allow GET request for easy browser access
 
 //* protected routes (authentication required)
 router.use(protect); //* this protects all routes below 
 
-router.post('/logout', logout); //? must be logged in to logout
 router.get('/user-profile', getMe);//? must be logged in to see profile
 router.put('/updatedetails', updateDetails);//? must be logged in to update details
 router.put('/updateprofile', updateProfile);//? must be logged in to update profile (fitness goals, age, phone)

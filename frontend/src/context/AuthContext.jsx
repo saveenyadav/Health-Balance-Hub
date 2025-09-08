@@ -3,12 +3,22 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  //* backend auth state - updated by okile
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //* colleague's localStorage functionality - merged with backend
+  const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  const [users, setUsers] = useState(storedUsers);
+
   //* backend api configuration - updated by okile
   const API_BASE = 'http://localhost:5001/api/auth';
+
+  //* save users to localStorage when users array changes
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
   //* check if user is logged in on app start - updated by okile
   useEffect(() => {
@@ -38,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   //* backend connection: register new user - updated by okile
-  const register = async ({ name, email, password }) => {
+  const register = async ({ name, email, password, plan = "Trial" }) => {
     try {
       setError(null);
       setLoading(true);
@@ -56,9 +66,17 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.success) {
-        setUser(data.user);
-        console.log('registration successful:', data.user.name);
-        return { success: true, message: data.message };
+        //* create user object with colleague's profile features
+        const newUser = {
+          ...data.user,
+          plan,
+          profilePic: "https://via.placeholder.com/100",
+          memberSince: new Date().toLocaleDateString(),
+        };
+
+        setUser(newUser);
+        console.log('registration successful:', newUser.name);
+        return { success: true, message: data.message, token: data.token };
       } else {
         setError(data.error);
         return { success: false, error: data.error };
@@ -93,7 +111,11 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         setUser(data.user);
         console.log('login successful:', data.user.name);
-        return { success: true, message: data.message };
+        return { 
+          success: true, 
+          message: data.message,
+          token: data.token //* return token for debugging
+        };
       } else {
         setError(data.error);
         return { success: false, error: data.error };
@@ -117,12 +139,14 @@ export const AuthProvider = ({ children }) => {
       });
 
       setUser(null);
+      localStorage.removeItem("user"); //* colleague's localStorage cleanup
       console.log('user logged out successfully');
       return { success: true };
     } catch (error) {
       console.error('logout error:', error);
       //* still clear user locally even if api call fails
       setUser(null);
+      localStorage.removeItem("user");
       return { success: true };
     }
   };
@@ -159,7 +183,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //* context value with all auth functions and state - updated by okile
+  //* colleague's upgrade plan functionality - preserved
+  const upgradePlan = (newPlan) => {
+    if (user) {
+      const updatedUser = { ...user, plan: newPlan };
+      setUser(updatedUser);
+
+      //* update users array if it exists
+      const updatedUsers = users.map((u) =>
+        u.email === user.email ? updatedUser : u
+      );
+      setUsers(updatedUsers);
+    }
+  };
+
+  //* context value with all auth functions and state - merged version
   const value = {
     user,
     loading,
@@ -168,6 +206,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     register,
     updateProfile,
+    upgradePlan, //* colleague's feature preserved
     isAuthenticated: !!user, //* boolean check for authentication status
     setError
   };
@@ -189,3 +228,4 @@ export const useAuth = () => {
 };
 
 //* enhanced authcontext with real backend api integration - updated by okile
+//* merged with colleague's plan upgrade functionality - team collaboration

@@ -120,14 +120,14 @@ function Login() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const success = login(form);
     if (success) {
       setError("");
-      navigate("/");
+      navigate("/profile"); 
     } else {
       setError("❌ Please create an account to log in.");
     }

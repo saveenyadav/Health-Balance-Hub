@@ -220,17 +220,20 @@ export const getMe = asyncHandler(async (req, res, next) => {
   //* user is already available in req.user from protect middleware
   const user = req.user;
 
+  // Clean response to match frontend Profile.jsx expectations
   res.status(200).json({
     success: true,
     user: {
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
-      profile: user.profile,
-      createdAt: user.createdAt,
-      lastLogin: user.lastLogin,
-      emailVerified: user.emailVerified
+      memberSince: user.profile?.memberSince || user.createdAt,
+      plan: user.profile?.plan || {
+        planName: "No active plan",
+        monthlyFee: null,
+        totalPrice: null,
+        paymentMethod: null
+      }
     }
   });
 });
@@ -409,4 +412,4 @@ export const deleteAccount = asyncHandler(async (req, res, next) => {
 });
 
 //* enhanced authentication controller with password validation, security tracking, and user feedback
-//* includes account lockout protection, error handling, and comprehensive logging
+//* includes account

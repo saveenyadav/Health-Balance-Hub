@@ -18,12 +18,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //* check authentication status on app load
   useEffect(() => {
     checkAuthStatus();
   }, []);
 
-  //* check if user is authenticated
   const checkAuthStatus = async () => {
     try {
       setLoading(true);
@@ -49,7 +47,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //* register function - FIXED to NOT auto-login after registration
   const register = async (userData) => {
     try {
       setLoading(true);
@@ -67,8 +64,6 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.success) {
-        //* DON'T set user as authenticated after registration
-        //* Let them login manually for better UX
         return { success: true, message: data.message, user: data.user, token: data.token };
       } else {
         setError(data.message);
@@ -83,7 +78,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //* login function - FIXED: returns redirect info instead of navigating
   const login = async (credentials) => {
     try {
       setLoading(true);
@@ -103,8 +97,7 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         setUser(data.user);
         setIsAuthenticated(true);
-        //* Return redirect info - let component handle navigation
-        return { success: true, message: data.message, redirect: '/' };
+        return { success: true, message: data.message, user: data.user, redirect: '/' };
       } else {
         setError(data.message);
         return { success: false, error: data.message };
@@ -118,7 +111,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //* logout function - FIXED: proper structure without return in finally
   const logout = async () => {
     try {
       await fetch(`${API_BASE_URL}/auth/logout`, {
@@ -128,8 +120,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     }
-    
-    //* Always clear user state and return redirect info
     setUser(null);
     setIsAuthenticated(false);
     return { success: true, redirect: '/login' };

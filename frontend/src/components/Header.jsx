@@ -1,14 +1,39 @@
 // Header.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import styles from "../styles/Header.module.css";
-import { FaSearch, FaUser, FaBars, FaTimes } from "react-icons/fa";
+import { FaSearch, FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleUserClick = () => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      setDropdownOpen((prev) => !prev);
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      logout();
+      setDropdownOpen(false);
+      navigate("/");
+    }
+  };
+
+  const handleProfile = () => {
+    navigate("/profile");
+    setDropdownOpen(false);
   };
 
   return (
@@ -33,22 +58,31 @@ function Header() {
           <Link to="/workout">Workout</Link>
           <Link to="/nutrition">Nutrition</Link>
           <Link to="/mindset">Mindset</Link>
-          <Link to="/membership">Membership</Link>
           <Link to="/contact">Contact</Link>
+          <Link to="/membership">Membership</Link>
         </nav>
 
         {/* Icons */}
         <div className={styles.icons}>
-          {/* Search icon -> optional search page */}
+          {/* Search icon */}
           <Link to="/search">
             <FaSearch size={20} />
           </Link>
 
-          {/* User icon -> login page */}
-          <Link to="/login">
-            <FaUser size={20} />
-          </Link>
-          
+          {/* User icon with dropdown */}
+          <div className={styles.userMenu}>
+            <FaUser
+              size={20}
+              onClick={handleUserClick}
+              style={{ cursor: "pointer" }}
+            />
+            {user && dropdownOpen && (
+              <div className={styles.dropdown}>
+                <button onClick={handleProfile}>Profile</button>
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>
@@ -56,3 +90,4 @@ function Header() {
 }
 
 export default Header;
+

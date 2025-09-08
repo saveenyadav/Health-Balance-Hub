@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom"; 
 import styles from "../styles/Checkout.module.css";
+import { useAuth } from "../context/AuthContext";
 
 // Add icons (you can replace these with real SVGs or images)
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
@@ -8,6 +9,8 @@ import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
 function Checkout() {
   const location = useLocation();
   const { planName, price } = location.state || {};
+
+  const { upgradePlan } = useAuth();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -111,6 +114,16 @@ function Checkout() {
       alert("Please fill all payment details correctly!");
       return;
     }
+
+     // Update user's plan in AuthContext
+    upgradePlan({
+    planName,
+    monthlyFee: price,
+    totalPrice,
+    paymentMethod: formData.paymentMethod,
+  });
+    
+    
     setShowModal(true);
     setCountdown(5);
     setShowMessage(false);

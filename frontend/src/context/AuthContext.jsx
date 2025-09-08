@@ -39,39 +39,45 @@ export const AuthProvider = ({ children }) => {
   };
 
   
-  const register = ({ name, email, password, plan = "Trial" }) => {
-    const existingUser = users.find((u) => u.email === email);
-    if (existingUser) {
-      return false;
-    }
+  const register = ({ name, email, password }) => {
+  const existingUser = users.find((u) => u.email === email);
+  if (existingUser) {
+    return false;
+  }
 
-    const newUser = {
-      name,
-      email,
-      password,
-      plan,
-      profilePic: "https://via.placeholder.com/100", 
-      memberSince: new Date().toLocaleDateString(),
-    };
+  const newUser = {
+  name,
+  email,
+  password,
+  plan: {
+    planName: null,
+    monthlyFee: null,
+    totalPrice: null,
+    paymentMethod: null,
+  },
+  profilePic: "https://via.placeholder.com/100",
+  memberSince: new Date().toLocaleDateString(),
+};
 
-    setUsers([...users, newUser]);
-    setUser(newUser); 
-    return true;
-  };
 
-  
-  const upgradePlan = (newPlan) => {
-    if (user) {
-      const updatedUser = { ...user, plan: newPlan };
-      setUser(updatedUser);
+  setUsers([...users, newUser]);
+  setUser(newUser);
+  return true;
+};
 
-     
-      const updatedUsers = users.map((u) =>
-        u.email === user.email ? updatedUser : u
-      );
-      setUsers(updatedUsers);
-    }
-  };
+
+  const upgradePlan = (planDetails) => {
+  if (user) {
+    const updatedUser = { ...user, plan: planDetails };
+    setUser(updatedUser);
+
+    const updatedUsers = users.map((u) =>
+      u.email === user.email ? updatedUser : u
+    );
+    setUsers(updatedUsers);
+  }
+};
+
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register, upgradePlan }}>

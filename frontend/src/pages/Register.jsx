@@ -32,11 +32,16 @@ function Register() {
 
     try {
       const result = await register({
-        name,
-        email: form.email,
-        password: form.password
+
+        ...form,
+         name // keep firstName, lastName, email, password, plus full name - Updated by okile
+        // name,
+        // email: form.email,
+        // password: form.password
       });
 
+      //* 
+const emailToRedirect = form.email;//*Prevents stale email during redirect - updated by okile
       if (result.success) {
         setError("");
         setSuccess(`Welcome ${name}! Your account has been created successfully.`);
@@ -46,7 +51,7 @@ function Register() {
           navigate("/login", { 
             state: { 
               message: `Registration successful! Please log in with your credentials.`,
-              email: form.email 
+              email: emailToRedirect //form.email 
             }
           });
         }, 2000);
@@ -54,6 +59,8 @@ function Register() {
       } else {
         setError(result.error || "Registration failed. Please try again.");
       }
+      
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setError("Registration failed. Please try again.");
     } finally {

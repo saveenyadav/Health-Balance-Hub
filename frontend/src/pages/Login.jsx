@@ -24,7 +24,7 @@ function Login() {
   //* redirect if already authenticated - temporary redirect to home until profile page is merged - updated by okile
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/profile");
     }
   }, [isAuthenticated, navigate]);
 
@@ -102,7 +102,7 @@ function Login() {
     <div className="login-page">
       <div className="login-wrapper">
         <div className="login-form">
-          <h2>Please Login Here! </h2>
+          <h2>Log in </h2>
           <p className="login-link">
             Don't have an account? <Link to="/register">Register</Link>
           </p>

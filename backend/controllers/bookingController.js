@@ -1,5 +1,5 @@
 import Yoga from '../models/Yoga.js';
-import UserProfile from '../models/UserProfile.js';
+// import UserProfile from '../models/UserProfile.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 

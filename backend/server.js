@@ -11,7 +11,6 @@ import errorHandler from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import yogaRoutes from './routes/yogaRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
-import userProfileRoutes from './routes/userProfileRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';           
 import contactRoutes from './routes/contactRoutes.js';
 
@@ -62,7 +61,6 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);              //? Authentication system
 app.use('/api/yoga-classes', yogaRoutes);      //? Yoga class management
 app.use('/api/bookings', bookingRoutes);       //? Booking system
-app.use('/api/user-profile', userProfileRoutes); //? User profiles & dashboard
 app.use('/api/blogs', blogRoutes);             //? Blog management
 app.use('/api/contact', contactRoutes);        //? Contact form system
 

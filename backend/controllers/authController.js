@@ -411,5 +411,46 @@ export const deleteAccount = asyncHandler(async (req, res, next) => {
   });
 });
 
+//* ADDED: update membership details and plan - Updated by Okile
+//* put /api/auth/register-membership
+//* private
+export const updateMembershipDetails = asyncHandler(async (req, res, next) => {
+  const { plan, membershipDetails } = req.body;
+
+  if (!plan || !plan.planName) {
+    return next(new ErrorResponse('Please provide a valid membership plan', 400));
+  }
+  if (!membershipDetails) {
+    return next(new ErrorResponse('Please provide membership registration details', 400));
+  }
+
+  // Update user's plan and membership details in profile
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { 
+      'profile.plan': plan,
+      'profile.membershipDetails': membershipDetails
+    },
+    { new: true, runValidators: true }
+  );
+
+  //* enhanced logging
+  console.log('membership registered:', user.name, user.email, 'plan:', plan.planName);
+
+  res.status(200).json({
+    success: true,
+    message: 'Membership registration successful',
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      memberSince: user.profile?.memberSince || user.createdAt,
+      plan: user.profile?.plan,
+      membershipDetails: user.profile?.membershipDetails
+    }
+  });
+});
+
 //* enhanced authentication controller with password validation, security tracking, and user feedback
-//* includes account
+//* includes account lockout protection, error handling, and comprehensive logging
+// Storing membership info inside the User.profile 

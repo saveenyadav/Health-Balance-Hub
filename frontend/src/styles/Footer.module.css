@@ -80,6 +80,8 @@
   border-radius: 6px 0 0 6px;
   outline: none;
   transition: border 0.3s;
+  margin: 0%;
+  margin-right: 5px;
 }
 
 .newsletterInput:focus {
@@ -115,7 +117,7 @@
   border-top: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.6rem;
   font-size: 0.85rem;
   color: #555;

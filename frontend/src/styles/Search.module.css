@@ -1,0 +1,182 @@
+.searchPage {
+  font-family: "Arial", sans-serif;
+  color: #fff;
+  background: url("https://images.unsplash.com/photo-1558611848-73f7eb4001a1")
+    center/cover no-repeat;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 2rem;
+  padding-top: 250px;
+  overflow-x: hidden;
+}
+
+.searchPage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  width: 100%;
+  
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+.searchBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.inputWrapper {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 36%;
+  transform: translateY(-50%);
+  color: black;
+  pointer-events: none;
+  z-index: 2;
+  font-size: 1rem;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.inputWrapper input:focus {
+  background-color: #ffffff; /* stay white on focus */
+  color: #000000;
+  transform: scale(1.02);
+  box-shadow: 0 0 8px #906137;
+}
+
+.searchBar button {
+  background: #906137;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.searchBar button:hover {
+  background: #805ad5;
+  transform: scale(1.05);
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.resultCard {
+  background: rgba(0, 0, 0, 0.75);
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+@keyframes popUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.resultCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.resultCard h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.category {
+  display: inline-block;
+  background: #ffb703;
+  color: #0d1b2a;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.noResults {
+  text-align: center;
+  font-size: 1rem;
+  color: #ccc;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .results {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .searchBar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .searchBar button,
+  .inputWrapper input {
+    width: 100%;
+  }
+}

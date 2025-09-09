@@ -1,0 +1,198 @@
+.login-page {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("https://images.unsplash.com/photo-1558611848-73f7eb4001a1") 
+              center/cover no-repeat;
+  filter: blur(4px) brightness(0.9);
+  z-index: 0;
+}
+
+
+.login-wrapper {
+  position: relative;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 450px;
+  width: 100%;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+
+.login-form h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+
+.login-link {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: white;
+  text-decoration: none;
+}
+
+.login-link a:hover {
+  text-decoration: none;
+  color: #805ad5;
+}
+
+
+.form-group {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+
+.password-field {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+
+.terms {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.terms a {
+  color: #906137;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}
+
+
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #906137;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+.primary-btn:hover {
+  background-color: #805ad5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #bbb;
+}
+
+
+.social-login {
+  display: flex;
+  gap: 10px;
+}
+
+.google-btn,
+.apple-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: opacity 0.3s;
+}
+
+.google-btn {
+  background-color: #fff;
+  color: #000;
+}
+
+.google-btn:hover {
+  opacity: 0.9;
+}
+
+.apple-btn {
+  background-color: #000;
+  color: #fff;
+}
+
+.apple-btn:hover {
+  opacity: 0.9;
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid #9f7aea;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+
+
+.primary-btn:hover {
+  background-color: #805ad5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.google-btn:hover,
+.apple-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.toggle-password:hover {
+  color: #805ad5;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}

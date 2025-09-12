@@ -220,7 +220,7 @@ userSchema.methods.getEmailVerificationToken = function() {
 };
 
 //* indexes for better performance
-userSchema.index({ email: 1 });
+
 userSchema.index({ 'profile.membershipPlan': 1 });
 userSchema.index({ createdAt: -1 });
 userSchema.index({ lastLogin: -1 });

@@ -31,8 +31,12 @@ const app = express();
 
 //* Security Middleware
 //* CORS configuration
+//* CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173'
+  ], // updated by Okile: allow both frontend dev ports
   credentials: true
 }));
 

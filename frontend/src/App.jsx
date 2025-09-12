@@ -19,6 +19,9 @@ import Register from "./pages/Register";
 import { AuthProvider } from "./context/AuthContext";
 import "./styles/App.css";
 
+//*updated by Okile: import VerifyEmailPage
+import VerifyEmailPage from "./pages/VerifyEmailPage"; //*updated by Okile
+
 function App() {
   return (
     <Router>
@@ -42,6 +45,7 @@ function App() {
               <Route path="/search" element={<Search />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />    
+              <Route path="/verify-email" element={<VerifyEmailPage />} /> {/* updated by Okile */}
             </Routes>
           </main>
           <Footer />

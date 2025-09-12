@@ -63,7 +63,7 @@ export const register = asyncHandler(async (req, res, next) => {
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}&email=${user.email}`;
    
     const mailOptions = {
-  from: `"HBHteam" <${process.env.EMAIL_USER}>`,//* Improved sender format  */
+  from: `"HBH-Team" <${process.env.EMAIL_USER}>`,//* Improved sender format  */
   to: user.email,
   subject: 'Welcome to Health Balance Hub – Please Verify Your Email',
   html: `
@@ -161,10 +161,12 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
   user.profile.emailVerificationToken = undefined;
   await user.save();
 
-  res.status(200).json({
-    success: true,
-    message: 'Email verified successfully. You can now log in.'
-  });
+//* After verifying email
+  const frontendLoginUrl = process.env.FRONTEND_URL
+    ? `${process.env.FRONTEND_URL}/login`
+    : 'http://localhost:3000/login'; //* fallback URL
+
+  return res.redirect(frontendLoginUrl);
 });
 
 //* login user

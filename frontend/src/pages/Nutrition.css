@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: auto;
   padding: 2rem;
-  background: #f9fafc;
+  background:  #fffaf0;
   border-radius: 12px;
 }
 
@@ -60,11 +60,11 @@
 .meal-content h2 {
   font-size: 1.3rem;
   margin-bottom: 0.5rem;
-  color: #4CAF50;
+  color: #ff7043;
 }
 
 .nutrition-tips {
-  background: #e8f5e9;
+  background: white;
   padding: 2rem;
   border-radius: 12px;
   margin-top: 2rem;

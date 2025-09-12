@@ -91,11 +91,11 @@ footer {
 
 .contact-card input:focus,
 .contact-card textarea:focus {
-  border-color: #906137;
+  border-color: #ff7043;
 }
 
 .contact-card button {
-  background: #906137;
+  background: #ff7043;
   color: white;
   padding: 0.8rem;
   margin: 0.8rem;
@@ -107,7 +107,7 @@ footer {
 }
 
 .contact-card button:hover {
-  background: #805AD5;
+  background: green;
 }
 
 .status-message {
@@ -120,7 +120,7 @@ footer {
 }
 
 .status-message.error {
-  color: #805AD5;
+  color: red;
 }
 
 footer {
@@ -184,7 +184,7 @@ footer {
   display: inline-block;
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
-  background: #906137;
+  background: #ff7043;
   color: #fff;
   text-decoration: none;
   font-weight: bold;
@@ -193,6 +193,6 @@ footer {
 }
 
 .map-button:hover {
-  background: #805ad5;
+  background-color: green;
   transform: translateY(-2px);
 }

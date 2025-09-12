@@ -35,14 +35,14 @@
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  background: #ffc107;
-  color: #333;
+  background: #ff7043;
+  color: #fff;
   font-weight: 500;
   transition: background 0.2s, color 0.2s;
 }
 
 .filter-buttons button:hover {
-  background: #fd7e14;
+  background: green;
   color: #fff;
 }
 
@@ -66,13 +66,13 @@
   border: none;
   cursor: pointer;
   font-weight: 500;
-  background: #ffc107;
-  color: #333;
+  background: #ff7043;
+  color: #fff;
   transition: background 0.2s;
 }
 
 .theme-toggle button:hover {
-  background: #fd7e14;
+  background: green;
 }
 
 /* Workouts Grid */

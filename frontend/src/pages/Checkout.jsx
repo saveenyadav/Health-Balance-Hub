@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom"; 
 import styles from "../styles/Checkout.module.css";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // Add icons (you can replace these with real SVGs or images)
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
@@ -11,6 +12,8 @@ function Checkout() {
   const { planName, price } = location.state || {};
 
   const { upgradePlan } = useAuth();
+  const navigate = useNavigate();
+
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -196,7 +199,7 @@ function Checkout() {
           </div>
 
 
-          <button type="submit" className={styles.submitButton} disabled={!isLeftFormValid() || !agreed} style={{ backgroundColor: !isLeftFormValid() || !agreed ? "#FFD8A8" : "#FF8C00" }}>
+          <button type="submit" className={styles.submitButton} disabled={!isLeftFormValid() || !agreed} style={{ backgroundColor: !isLeftFormValid() || !agreed ? "#e85a2a" : "#16a34a" }}>
             Submit
           </button>
         </form>
@@ -337,7 +340,7 @@ function Checkout() {
           </div>
         </div>
 
-        <button className={styles.orderButton} disabled={!isPaymentValid()} onClick={handlePlaceOrder} style={{ backgroundColor: isPaymentValid() ? "#FF8C00" : "#FFD8A8" }}>
+        <button className={styles.orderButton} disabled={!isPaymentValid()} onClick={handlePlaceOrder} style={{ backgroundColor: isPaymentValid() ? "#16a34a" : "#e85a2a" }}>
           Place Binding Order
         </button>
       </div>
@@ -356,7 +359,16 @@ function Checkout() {
                 <h3>🎉 Thank you, {formData.fullName || "Customer"}!</h3>
                 <p>You have selected the <strong>{planName || "Standard Plan"} (€{totalPrice}/month)</strong> with <strong>{formData.paymentMethod}</strong> payment.</p>
                 <p>A confirmation email will be sent to {formData.email || "your email"}.</p>
-                <button className={styles.closeModalButton} onClick={() => setShowModal(false)}>Close</button>
+                <button
+                  className={styles.closeModalButton}
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate("/profile");
+                  }}
+                >
+                  Close
+                </button>
+
               </div>
             )}
           </div>

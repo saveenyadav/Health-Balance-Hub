@@ -53,7 +53,7 @@
 
 .login-link a:hover {
   text-decoration: none;
-  color: #805ad5;
+  color: #ff7043;
 }
 
 
@@ -95,7 +95,7 @@ input {
 }
 
 .terms a {
-  color: #906137;
+  color: #ff7043;
   text-decoration: none;
 }
 
@@ -111,13 +111,13 @@ input {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background-color: #906137;
+  background-color: #ff7043;
   color: #fff;
   transition: background 0.3s;
 }
 
 .primary-btn:hover {
-  background-color: #805ad5;
+  background-color: green;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -170,7 +170,7 @@ input {
 
 input:focus {
   outline: none;
-  border: 2px solid #9f7aea;
+  border: 2px solid #ff7043;
   background-color: rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -178,7 +178,7 @@ input:focus {
 
 
 .primary-btn:hover {
-  background-color: #805ad5;
+  background-color: green;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -192,7 +192,7 @@ input:focus {
 
 
 .toggle-password:hover {
-  color: #805ad5;
+  color: green;
   transform: scale(1.1);
   transition: all 0.3s ease;
 }

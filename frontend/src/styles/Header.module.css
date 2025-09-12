@@ -61,7 +61,7 @@
 }
 
 .nav a:hover {
-  color: #0070f3;
+  color: #ff7043;
   transform: translateY(-2px);
 }
 
@@ -69,8 +69,17 @@
 .icons {
   display: flex;
   gap: 1rem;
-  color: #333;
   cursor: pointer;
+}
+
+/* Common style for search and user icons */
+.iconLink {
+  color: #000; /* default black */
+  transition: color 0.3s ease;
+}
+
+.iconLink:hover {
+  color: #ff7043; /* blue on hover */
 }
 
 /* User dropdown menu */
@@ -89,6 +98,8 @@
   display: flex;
   flex-direction: column;
   z-index: 1000;
+  min-width: 15px;
+  
 }
 
 .dropdown button {
@@ -99,10 +110,12 @@
   cursor: pointer;
   font-size: 14px;
   color: #333;
+  transition: color 0.3s ease;
 }
 
 .dropdown button:hover {
   background: #f0f0f0;
+  color: #ff7043;
 }
 
 /* Responsive */

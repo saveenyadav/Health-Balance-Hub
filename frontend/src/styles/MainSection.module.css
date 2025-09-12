@@ -126,7 +126,7 @@
 }
 
 .ctaButton:hover {
-  background-color: #ff5722;
+  background-color: green;
   transform: scale(1.05);
 }
 
@@ -261,7 +261,7 @@
 }
 
 .closeButton:hover {
-  background: #ff5722;
+  background: green;
   transform: scale(1.05);
 }
 

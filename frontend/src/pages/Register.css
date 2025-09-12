@@ -49,7 +49,7 @@
 }
 
 .register-link a:hover {
-  color: #805ad5;
+  color: #ff7043;
 }
 
 .form-group {
@@ -74,7 +74,7 @@ input:focus,
 textarea:focus {
   background-color: #ffffff !important;
   color: #000000 !important;
-  border: 2px solid #906137;
+  border: 2px solid #ff7043;
   box-shadow: 0 0 5px rgba(144, 97, 55, 0.5);
   outline: none;
   transform: none;
@@ -94,7 +94,7 @@ textarea:focus {
 }
 
 .toggle-password:hover {
-  color: #805ad5;
+  color: green;
   transform: scale(1.1);
   transition: all 0.3s ease;
 }
@@ -113,12 +113,12 @@ textarea:focus {
   height: 16px;
   margin-bottom: auto;
   
-  accent-color: #805ad5;
+  accent-color: green;
   cursor: pointer;
 }
 
 .terms span a {
-  color: #8E5C2F;
+  color: #ff7043;
   text-decoration: none;
   font-weight: 500;
 }
@@ -134,13 +134,13 @@ textarea:focus {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background-color: #8E5C2F;
+  background-color: #ff7043;
   color: #fff;
   transition: background 0.3s;
 }
 
 .primary-btn:hover {
-  background-color: #805ad5;
+  background-color: green;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }

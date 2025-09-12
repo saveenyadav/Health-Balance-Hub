@@ -63,7 +63,7 @@
 
 .links a:hover,
 .socialList a:hover {
-  color: #0070f3;
+  color: #ff7043;
   transform: translateX(3px);
   text-decoration: none;
 }
@@ -85,12 +85,12 @@
 }
 
 .newsletterInput:focus {
-  border-color: #0070f3;
+  border-color: #ff7043;
 }
 
 .newsletterButton {
   padding: 0.75rem 1.2rem;
-  background: #0070f3;
+  background: #ff7043;
   color: #fff;
   border: none;
   border-radius: 0 6px 6px 0;
@@ -99,7 +99,7 @@
 }
 
 .newsletterButton:hover {
-  background: #005bb5;
+  background: green;
   transform: translateY(-1px);
 }
 
@@ -128,12 +128,18 @@
 .socialList li a svg {
   width: 18px;
   height: 18px;
-  color: #0070f3;
   transition: color 0.3s;
 }
 
 .socialList li a:hover svg {
-  color: #005bb5;
+  color: #ff7043;
+}
+
+.instagramSvg {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  border-radius: 4px;
+  padding: 3px;
+  color: white;
 }
 
 /* Responsive */
@@ -160,4 +166,19 @@
   .newsletterButton {
     margin-top: 0.5rem;
   }
+}
+/* Success message below newsletter form */
+.successMessage {
+  color: green; /* blue color */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  transition: opacity 0.3s ease-in-out;
+}
+.contact li svg {
+  color: #ff7043;
+  transition: color 0.3s;
+}
+
+.contact li:hover svg {
+  color: #ff7043;
 }

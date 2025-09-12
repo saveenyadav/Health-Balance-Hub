@@ -81,11 +81,12 @@
   background-color: #ffffff; /* stay white on focus */
   color: #000000;
   transform: scale(1.02);
-  box-shadow: 0 0 8px #906137;
+  box-shadow: 0 0 8px #ff7043;
 }
 
 .searchBar button {
-  background: #906137;
+  color: white;
+  background: #ff7043;
   border: none;
   padding: 0.9rem 1.6rem;
   margin-bottom: 1rem;
@@ -96,7 +97,7 @@
 }
 
 .searchBar button:hover {
-  background: #805ad5;
+  background: green;
   transform: scale(1.05);
 }
 

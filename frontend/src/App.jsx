@@ -22,34 +22,31 @@ import "./styles/App.css";
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        {/* Fixed Header */}
-        <Header />
-
-        {/* Main content (padding applied in CSS for all pages) */}
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/navbar" element={<Navbar />} />
-            <Route path="/blogs/:id" element={<BlogDetail />} />
-            <Route path="/workout" element={<Workout />} />
-            <Route path="/nutrition" element={<Nutrition />} />
-            <Route path="/mindset" element={<Mindset />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/membership" element={<Membership />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />    
-          </Routes>
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
+      <AuthProvider>
+        <div className="app-container">
+          <Header />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/navbar" element={<Navbar />} />
+              <Route path="/blogs/:id" element={<BlogDetail />} />
+              <Route path="/workout" element={<Workout />} />
+              <Route path="/nutrition" element={<Nutrition />} />
+              <Route path="/mindset" element={<Mindset />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/membership" element={<Membership />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />    
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

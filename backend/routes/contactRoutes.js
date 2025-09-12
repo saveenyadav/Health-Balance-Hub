@@ -7,19 +7,20 @@ import {
   deleteContact,
   getContactStats,
   searchContacts
+  // REMOVED: testDatabaseRead (no longer needed)
 } from '../controllers/contactController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//* public route - no authentication required (frontend)
+//* Public route - No authentication required (matches frontend)
 router.post('/', submitContact);
 
-//* protected routes - Admin only (simplified admin panel)
+//* Protected routes - Admin only
 router.use(protect);
 router.use(authorize('admin'));
 
-//*  admin contact management routes
+//* Admin contact management routes
 router.get('/', getAllContacts);
 router.get('/search', searchContacts);
 router.get('/stats', getContactStats);

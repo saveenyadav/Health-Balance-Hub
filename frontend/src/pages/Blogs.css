@@ -34,20 +34,20 @@
   border-radius: 20px;
   border: none;
   cursor: pointer;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-  color: #fff;
+  background: #ff6f61 !important;
+  color: #fff !important;
   font-weight: 500;
   transition: background 0.3s, transform 0.3s, color 0.3s;
 }
 
 .filter-buttons button:hover {
-  background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+  background: #e55a4d !important;
   color: #fff;
   transform: translateY(-3px);
 }
 
 .filter-buttons button.active {
-  background: linear-gradient(135deg, #ff6f61 0%, #ffb88c 100%);
+   background: #ff826f !important;
   color: #fff;
   transform: translateY(-2px);
 }

@@ -66,13 +66,13 @@
   border: none;
   cursor: pointer;
   font-weight: 500;
-  background: #ffc107;
-  color: #333;
+  background: #ff6f61;
+  color: #fff;
   transition: background 0.2s;
 }
 
 .theme-toggle button:hover {
-  background: #fd7e14;
+  background: #e55a4d;
 }
 
 /* Workouts Grid */

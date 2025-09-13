@@ -8,6 +8,7 @@ import "./Register.css";
 
 function Register() {
   const { register, loading, error: authError } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
@@ -41,22 +42,22 @@ function Register() {
       const result = await register(payload); // ::Updated by Okile
 
       // Use the exact email that was sent to backend for redirect/state (prevents stale values).
-      const emailToRedirect = payload.email; // ::Updated by Okile
+      // const emailToRedirect = payload.email; // ::Updated by Okile
 
       if (result.success) {
         setError("");
         // Add verification guidance to the success message (backend sends verification email).
-        setSuccess(`Welcome ${name}! Your account has been created successfully. Please check your email to verify your account.`); // ::Updated by Okile
+        setSuccess(`Hi ${name}! Registration successful. Verification Email sent to your inbox.`); // ::Updated by Okile
         setForm({ firstName: "", lastName: "", email: "", password: "" });
 
-        setTimeout(() => {
-          navigate("/login", { 
-            state: { 
-              message: `Registration successful! Please log in with your credentials.`,
-              email: emailToRedirect // ::Updated by Okile
-            }
-          });
-        }, 2000);
+        // setTimeout(() => {
+        //   navigate("/login", { 
+        //     state: { 
+        //       message: `Registration successful! Please log in with your credentials.`,
+        //       email: emailToRedirect // ::Updated by Okile
+        //     }
+        //   });
+        // }, 2000);
 
       } else {
         setError(result.error || "Registration failed. Please try again.");
@@ -84,7 +85,7 @@ function Register() {
           {success && (
             <div className="success-message">
               {success}
-              <p className="redirect-info">Redirecting to login page...</p>
+              {/* <p className="redirect-info">Redirecting to login page...</p> */}
             </div>
           )}
           {(error || authError) && !success && (

@@ -1,15 +1,28 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-const BlogDetail = ({ blogs }) => {
+import { useParams, Link } from "react-router-dom"; // import Link
+import { allBlogs } from "../data/blogs"; 
+import "./BlogDetail.css";
+
+const BlogDetail = () => {
   const { id } = useParams();
-  const blog = blogs.find((b) => b._id.toString() === id);
-  if (!blog) return <p>Blog not found!</p>;
+  const blog = allBlogs.find(b => b._id === parseInt(id));
+
+  if (!blog) return <p>Blog not found</p>;
+
   return (
-    <div style={{ maxWidth: "800px", margin: "auto", padding: "2rem" }}>
+    <main className="blog-detail">
       <h1>{blog.title}</h1>
-      <img src={blog.image} alt={blog.title} style={{ width: "100%", margin: "1rem 0" }} />
+      <img src={blog.image} alt={blog.title} className="blog-detail-img" />
       <p>{blog.content}</p>
-    </div>
+
+      {/* Back to Blogs link */}
+      <Link to="/blogs" className="back-to-blogs">
+        ← Back to Blogs
+      </Link>
+    </main>
   );
 };
+
 export default BlogDetail;
+
+

@@ -15,7 +15,6 @@
   font-size: 2.5rem;
   margin-bottom: 1rem;
   color: #2c3e50;
-  border-bottom: 3px solid #007BFF;
   display: inline-block;
   padding-bottom: 0.3rem;
 }
@@ -75,7 +74,7 @@
   text-align: center;
   margin-bottom: 1rem;
   color: #2c3e50;
-  border-bottom: 2px solid #4CAF50;
+  
   display: inline-block;
   padding-bottom: 0.2rem;
 }

@@ -1,39 +1,42 @@
-// updated by Okile
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("Verifying your email...");
 
   useEffect(() => {
     const token = searchParams.get("token");
     const email = searchParams.get("email");
 
-    // Log values for debugging
-    console.log("Token:", token, "Email:", email); // updated by Okile
-
     if (token && email) {
-      fetch(`http://localhost:5001/api/auth/verify-email?token=${token}&email=${encodeURIComponent(email)}`) // updated by Okile
-        .then(res => res.json())
-        .then(data => {
+      fetch(
+        `http://localhost:5001/api/auth/verify-email?token=${token}&email=${encodeURIComponent(email)}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
           if (data.success) {
-            setMessage("Email verified! Redirecting to login...");
-            setTimeout(() => navigate("/login"), 2000);
+            // Redirect immediately to login page with verified state
+            navigate("/login", { state: { verified: true, email } });
           } else {
-            setMessage(data.message || "Verification failed.");
+            // Redirect to login with error message if verification failed
+            navigate("/login", {
+              state: { error: data.message || "Email verification failed." },
+            });
           }
         })
-        .catch(() => setMessage("Verification failed. Please try again."));
+        .catch(() => {
+          // Redirect to login on network or other errors
+          navigate("/login", {
+            state: { error: "Email verification failed. Please try again." },
+          });
+        });
     } else {
-      setMessage("Invalid verification link.");
+      // Redirect to login if the token or email is missing
+      navigate("/login", { state: { error: "Invalid verification link." } });
     }
   }, [searchParams, navigate]);
 
-  return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }}>
-      <h2>{message}</h2>
-    </div>
-  );
+  // The page itself is never rendered; redirect happens immediately
+  return <></>;
 }

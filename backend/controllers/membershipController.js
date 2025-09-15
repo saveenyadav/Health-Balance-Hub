@@ -125,6 +125,7 @@ export const processPayment = async (req, res) => {
       console.log("Emails disabled via DISABLE_EMAILS=true. Skipping sendCongratsEmail.");
     }
 
+    // Always respond with JSON, never redirect
     return res.status(200).json({ success: true, message: "Payment processed and plan upgraded." });
   } catch (err) {
     console.error("processPayment error:", err.message, err.stack);

@@ -1,58 +1,55 @@
+// authController.js
 import asyncHandler from '../middleware/asyncHandler.js';
 import ErrorResponse from '../utils/errorResponse.js';
 import User from '../models/User.js';
 import { generateToken } from '../utils/jwt.js';
-import nodemailer from 'nodemailer'; //* Added for sending emails
-import crypto from 'crypto'; //* generating verification token
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 //* register user
-//* post /api/auth/register
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
-  //* validation
   if (!name || !email || !password) {
     return next(new ErrorResponse('Please provide name, email and password', 400));
   }
 
-  //* enhanced email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return next(new ErrorResponse('Please provide a valid email address', 400));
   }
 
-  //* check if user already exists
   const existingUser = await User.findOne({ email: email.toLowerCase() });
   if (existingUser) {
     return next(new ErrorResponse('User already exists with this email', 400));
   }
 
-  //* get ip address and user agent for security tracking
-  const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+  const ipAddress = req.ip || req.connection.remoteAddress || req.socket?.remoteAddress;
   const userAgent = req.get('User-Agent') || 'Unknown';
 
   try {
-    //* create user
+    // Create user -- set top-level emailVerified false (keeps login check working)
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      emailVerified: false, // top-level flag used by login() check
       profile: {
         membershipPlan: 'trial',
         memberSince: new Date(),
         fitnessLevel: 'beginner',
-        emailVerified: false
+        emailVerified: false // keep in profile as well for UI compatibility
       },
       ipAddress,
       userAgent,
       lastLogin: new Date()
     });
 
-    //* generate email verification token
+    // Generate verification token (user.getEmailVerificationToken should set fields on user and return token)
     const verificationToken = user.getEmailVerificationToken();
     await user.save();
 
-    //* Send verification email
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -63,7 +60,7 @@ export const register = asyncHandler(async (req, res, next) => {
       }
     });
 
-    const verificationUrl = `${process.env.BACKEND_URL}/api/auth/verify-email?token=${verificationToken}&email=${user.email}`;
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}&email=${user.email}`;
 
     const mailOptions = {
       from: `"HBH-Team" <${process.env.EMAIL_USER}>`,
@@ -84,31 +81,14 @@ export const register = asyncHandler(async (req, res, next) => {
       console.log('Email sent:', info.response);
     } catch (error) {
       console.error('Nodemailer error:', error);
+      // continue — we still return success response, but you may want to notify admin in prod
     }
 
-    //* generate JWT
-    const token = generateToken({ id: user._id });
-
-    res.status(201)
-      .cookie('token', token, {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
-      })
-      .json({
-        success: true,
-        message: `Welcome ${user.name}! Your account has been created. Please check your email to verify your account.`,
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          profile: user.profile,
-          createdAt: user.createdAt
-        }
-      });
+    // IMPORTANT: Do NOT auto-login here. Return success and let frontend redirect to login after verification.
+    return res.status(201).json({
+      success: true,
+      message: `Welcome ${user.name}! Your account has been created. Please check your email to verify your account.`
+    });
 
   } catch (error) {
     console.error('registration error:', error);
@@ -141,30 +121,36 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid verification link. Missing token or email.', 400));
   }
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  try {
+    // verify the token using jwt (throws if invalid/expired)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  if (!user) {
-    return next(new ErrorResponse('No account found for this email.', 404));
-  }
+    // find the user by decoded id and email
+    const user = await User.findOne({ _id: decoded.id, email: email.toLowerCase() });
 
-  if (!user.emailVerificationToken || user.emailVerificationToken !== token) {
+    if (!user) {
+      return next(new ErrorResponse('No account found for this email.', 404));
+    }
+
+    // mark verified (set both top-level and profile flag for compatibility)
+    user.emailVerified = true;
+    if (!user.profile) user.profile = {};
+    user.profile.emailVerified = true;
+
+    // clear any stored verification token/expiry fields if present
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpire = undefined;
+
+    await user.save();
+
+    console.log(`Email verified for user: ${user.email} (id: ${user._id})`);
+
+    // Frontend will handle the redirect to login
+    return res.json({ success: true, message: 'Email verified!' });
+  } catch (err) {
+    console.error('verifyEmail error:', err);
     return next(new ErrorResponse('Invalid or expired verification link', 400));
   }
-
-  //* mark email verified (no auto login here!)
-  user.emailVerified = true;
-  user.emailVerificationToken = undefined;
-  user.emailVerificationExpire = undefined;
-  await user.save();
-
-  console.log(`✅ Email verified for user: ${user.email} (id: ${user._id})`);
-
-  //* redirect to frontend login with flag
-  const frontendLoginUrl = process.env.FRONTEND_URL
-    ? `${process.env.FRONTEND_URL}/login?verified=true`
-    : 'http://localhost:5173/login?verified=true';
-
-  return res.redirect(frontendLoginUrl);
 });
 
 //* login user
@@ -180,6 +166,7 @@ export const login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password', 401));
   }
 
+  // check top-level flag (we set this in register/verify)
   if (!user.emailVerified) {
     return next(new ErrorResponse('Please verify your email before logging in.', 401));
   }
@@ -193,7 +180,7 @@ export const login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Invalid email or password', 401));
   }
 
-  const ipAddress = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+  const ipAddress = req.ip || req.connection.remoteAddress || req.socket?.remoteAddress;
   const userAgent = req.get('User-Agent') || 'Unknown';
   await user.updateLoginInfo(ipAddress, userAgent);
 
@@ -398,3 +385,4 @@ export const updateMembershipDetails = asyncHandler(async (req, res, next) => {
     }
   });
 });
+

@@ -2,19 +2,15 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/Checkout.module.css";
 import { useAuth } from "../context/AuthContext";
-
-// Icons
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
 
 function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { planName, price } = location.state || {};
+  const { planName = "basic", price = 29 } = location.state || {};
   const { upgradePlan, user } = useAuth();
 
-
   // Form State
-  
   const [formData, setFormData] = useState({
     fullName: "",
     email: user?.email || "",
@@ -34,14 +30,11 @@ function Checkout() {
 
   const [formErrors, setFormErrors] = useState({});
   const [agreed, setAgreed] = useState(false);
-  const [submittedLeftForm, setSubmittedLeftForm] = useState(false); // ✅ enables payment section
 
   const activationFee = 15;
   const totalPrice = (price || 29) + activationFee;
 
-  
   // Validation
- 
   const validateField = (name, value) => {
     switch (name) {
       case "fullName":
@@ -70,19 +63,15 @@ function Checkout() {
     }
   };
 
-  
   // Input Handler
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
-  
   // Form Validation
-
-  const isLeftFormValid = () => {
+  const isMembershipValid = () => {
     const requiredFields = ["fullName", "email", "phone", "street", "city", "postalCode"];
     return requiredFields.every(f => formData[f] && !formErrors[f]) && agreed;
   };
@@ -97,63 +86,18 @@ function Checkout() {
     return false;
   };
 
-  
-  // Left Form Submission
-  
-  const handleLeftFormSubmit = async (e) => {
+  const isFormValid = () => isMembershipValid() && isPaymentValid();
+
+  // Submit All Data Together
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    if (!isLeftFormValid()) {
+    if (!isFormValid()) {
       alert("Please fill all fields correctly and agree to the terms!");
       return;
     }
 
-    try {
-      const res = await fetch("http://localhost:5001/api/membership/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ ...formData, planName, price: totalPrice }),
-      });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        setSubmittedLeftForm(true); // enables payment section
-        // Clear left form after submission
-        setFormData({
-          fullName: "",
-          email: user?.email || "",
-          phone: "",
-          street: "",
-          city: "",
-          postalCode: "",
-          paymentMethod: "",
-          cardNumber: "",
-          expiryDate: "",
-          cvv: "",
-          paypalEmail: "",
-          bankAccount: "",
-          gender: "",
-          dob: "",
-        });
-        setAgreed(false);
-        alert("Membership data saved! Now proceed to payment.");
-      } else {
-        alert(data.message || "Failed to save membership data.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Network error. Please try again.");
-    }
-  };
-
-  
-  // Payment Submission
-
-  const handlePlaceOrder = async () => {
-    if (!isPaymentValid()) {
-      alert("Please fill all payment details correctly!");
-      return;
-    }
+    // Debug log
+    console.log("Submitting membership & payment:", { ...formData, planName, price: totalPrice });
 
     try {
       const res = await fetch("http://localhost:5001/api/membership/payment", {
@@ -165,10 +109,7 @@ function Checkout() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        //  Update plan in AuthContext
         upgradePlan({ planName, monthlyFee: price, totalPrice, paymentMethod: formData.paymentMethod });
-
-        //  Clear all form fields after purchase
         setFormData({
           fullName: "",
           email: user?.email || "",
@@ -185,13 +126,9 @@ function Checkout() {
           gender: "",
           dob: "",
         });
-        setSubmittedLeftForm(false);
         setAgreed(false);
-
-        // Redirect to profile to show purchased plan
+        alert("Congratulations! Your membership and payment are complete. Check your inbox for confirmation.");
         navigate("/profile");
-
-        // Email handled by backend
       } else {
         alert(data.message || "Payment failed.");
       }
@@ -203,10 +140,10 @@ function Checkout() {
 
   return (
     <div className={styles.checkoutPage}>
-      {/* Left Side - Form */}
+      {/* Left Side - Membership Form */}
       <div className={styles.formSection}>
-        <h2>Checkout Form</h2>
-        <form onSubmit={handleLeftFormSubmit} className={styles.form}>
+        <h2>Membership Details</h2>
+        <form className={styles.form}>
           {/* Gender */}
           <div className={styles.formGroup}>
             <label>Gender</label>
@@ -218,77 +155,62 @@ function Checkout() {
               ))}
             </div>
           </div>
-
           {/* Full Name */}
           <div className={styles.formGroup}>
             <label>Full Name</label>
             <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} />
             {formErrors.fullName && <p className={styles.error}>{formErrors.fullName}</p>}
           </div>
-
           {/* DOB */}
           <div className={styles.formGroup}>
             <label>Date of Birth</label>
             <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} />
           </div>
-
           {/* Email */}
           <div className={styles.formGroup}>
             <label>Email</label>
             <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
             {formErrors.email && <p className={styles.error}>{formErrors.email}</p>}
           </div>
-
           {/* Phone */}
           <div className={styles.formGroup}>
             <label>Phone</label>
             <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} />
             {formErrors.phone && <p className={styles.error}>{formErrors.phone}</p>}
           </div>
-
           {/* Street */}
           <div className={styles.formGroup}>
             <label>Street</label>
             <input type="text" name="street" value={formData.street} onChange={handleInputChange} />
             {formErrors.street && <p className={styles.error}>{formErrors.street}</p>}
           </div>
-
           {/* City */}
           <div className={styles.formGroup}>
             <label>City</label>
             <input type="text" name="city" value={formData.city} onChange={handleInputChange} />
             {formErrors.city && <p className={styles.error}>{formErrors.city}</p>}
           </div>
-
           {/* Postal Code */}
           <div className={styles.formGroup}>
             <label>Postal Code</label>
             <input type="text" name="postalCode" value={formData.postalCode} onChange={handleInputChange} />
             {formErrors.postalCode && <p className={styles.error}>{formErrors.postalCode}</p>}
           </div>
-
           {/* Terms & Conditions */}
           <div className={styles.formGroupCheckbox}>
             <label>
               <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} /> I agree to Terms & Conditions
             </label>
           </div>
-
-          {/* Submit Button */}
-          <button type="submit" disabled={!isLeftFormValid()} className={styles.submitButton}>
-            Submit
-          </button>
         </form>
       </div>
-
-      {/* Right Side - Payment */}
+      {/* Right Side - Payment Section */}
       <div className={styles.paymentSection}>
         <h2>Payment Section</h2>
-
         {/* Credit Card */}
         <div className={styles.paymentOption}>
           <label>
-            <input type="radio" name="paymentMethod" value="Credit Card" checked={formData.paymentMethod==="Credit Card"} onChange={handleInputChange} disabled={!submittedLeftForm} />
+            <input type="radio" name="paymentMethod" value="Credit Card" checked={formData.paymentMethod==="Credit Card"} onChange={handleInputChange} />
             <FaCreditCard size={30}/> Credit Card
           </label>
           {formData.paymentMethod === "Credit Card" && (
@@ -299,11 +221,10 @@ function Checkout() {
             </div>
           )}
         </div>
-
         {/* PayPal */}
         <div className={styles.paymentOption}>
           <label>
-            <input type="radio" name="paymentMethod" value="PayPal" checked={formData.paymentMethod==="PayPal"} onChange={handleInputChange} disabled={!submittedLeftForm} />
+            <input type="radio" name="paymentMethod" value="PayPal" checked={formData.paymentMethod==="PayPal"} onChange={handleInputChange} />
             <FaPaypal size={30}/> PayPal
           </label>
           {formData.paymentMethod === "PayPal" && (
@@ -312,11 +233,10 @@ function Checkout() {
             </div>
           )}
         </div>
-
         {/* Bank Transfer */}
         <div className={styles.paymentOption}>
           <label>
-            <input type="radio" name="paymentMethod" value="Bank Transfer" checked={formData.paymentMethod==="Bank Transfer"} onChange={handleInputChange} disabled={!submittedLeftForm} />
+            <input type="radio" name="paymentMethod" value="Bank Transfer" checked={formData.paymentMethod==="Bank Transfer"} onChange={handleInputChange} />
             <FaUniversity size={30}/> Bank Transfer
           </label>
           {formData.paymentMethod === "Bank Transfer" && (
@@ -325,9 +245,8 @@ function Checkout() {
             </div>
           )}
         </div>
-
         {/* Place Order */}
-        <button disabled={!isPaymentValid()} onClick={handlePlaceOrder} className={styles.orderButton}>
+        <button disabled={!isFormValid()} onClick={handlePlaceOrder} className={styles.orderButton}>
           Place Binding Order
         </button>
       </div>

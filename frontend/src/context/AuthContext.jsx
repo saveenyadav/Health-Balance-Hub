@@ -14,14 +14,23 @@ const API_BASE_URL = "http://localhost:5001/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // true only after login
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Auto-check auth status on mount
+  // Auto-check auth status on mount (only if token exists)
   useEffect(() => {
-    checkAuthStatus();
+    const token = getCookie("token"); // check if JWT cookie exists
+    if (token) checkAuthStatus();
   }, []);
+
+  //* Helper to read cookie
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
 
   //* Check if session cookie exists and is valid
   const checkAuthStatus = async () => {
@@ -49,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //* Register new user (email verification required)
+  //* Register new user
   const register = async (userData) => {
     try {
       setLoading(true);
@@ -63,14 +72,9 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
-
-      if (data.success) {
-        // ✅ Do NOT set authenticated yet (user must verify + login)
-        return { success: true, message: data.message };
-      } else {
-        setError(data.message);
-        return { success: false, error: data.message };
-      }
+      if (data.success) return { success: true, message: data.message };
+      setError(data.message);
+      return { success: false, error: data.message };
     } catch (err) {
       console.error("Registration error:", err);
       setError("Registration failed. Please try again.");
@@ -94,11 +98,10 @@ export const AuthProvider = ({ children }) => {
       });
 
       const data = await response.json();
-
       if (data.success) {
         setUser(data.user);
-        setIsAuthenticated(true); // ✅ logged in successfully
-        return { success: true, message: data.message, user: data.user, redirect: "/" };
+        setIsAuthenticated(true);
+        return { success: true, message: data.message, user: data.user };
       } else {
         setError(data.message);
         return { success: false, error: data.message };
@@ -127,18 +130,35 @@ export const AuthProvider = ({ children }) => {
     return { success: true, redirect: "/login" };
   };
 
-  //* Upgrade membership plan (only client-side context update)
+  //* Upgrade membership plan and ensure user is authenticated
   const upgradePlan = (planData) => {
-    if (!user) return;
-    setUser((prev) => ({
-      ...prev,
-      profile: { ...prev.profile, membershipPlan: planData.planName },
-      membership: {
-        monthlyFee: planData.monthlyFee,
-        totalPrice: planData.totalPrice,
-        paymentMethod: planData.paymentMethod,
-      },
-    }));
+    // If user does not exist in context yet, create minimal user
+    setUser(prev => {
+      const updatedUser = prev
+        ? {
+            ...prev,
+            profile: { ...prev.profile, membershipPlan: planData.planName },
+            membership: {
+              monthlyFee: planData.monthlyFee,
+              totalPrice: planData.totalPrice,
+              paymentMethod: planData.paymentMethod,
+            },
+          }
+        : {
+            email: planData.email || "", // fallback if new user
+            profile: { membershipPlan: planData.planName },
+            membership: {
+              monthlyFee: planData.monthlyFee,
+              totalPrice: planData.totalPrice,
+              paymentMethod: planData.paymentMethod,
+            },
+          };
+      return updatedUser;
+    });
+
+    // ✅ Ensure isAuthenticated true after upgrade
+    setIsAuthenticated(true);
+
     console.log("User plan upgraded in context:", planData.planName);
   };
 
@@ -154,6 +174,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         checkAuthStatus,
         upgradePlan,
+        setUser, // optional if you want manual updates elsewhere
+        setIsAuthenticated,
       }}
     >
       {children}

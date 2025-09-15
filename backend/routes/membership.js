@@ -1,9 +1,9 @@
-import {Router} from "express";
+import { Router } from "express";
 import { saveMembershipData, processPayment } from "../controllers/membershipController.js";
 
 const router = Router();
 
-router.post("/checkout", saveMembershipData);    // For saving membership form data //* updated by Okile
-router.post("/payment", processPayment);         // For handling payment and plan upgrade //* updated by Okile
+router.post("/save", saveMembershipData);    // For saving membership form data
+router.post("/payment", processPayment);     // For handling payment and plan upgrade
 
 export default router;

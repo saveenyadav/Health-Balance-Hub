@@ -35,7 +35,7 @@
 }
 
 .planCard {
-  background: lavenderblush;
+  background:  #fffaf0;
   border-radius: 16px;
   padding: 30px;
   text-align: center;
@@ -59,7 +59,7 @@
 
 .price {
   font-size: 1.4rem;
-  color: palevioletred;
+  color: #ff7043;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -78,7 +78,7 @@
 
 .planFeatures p::before {
   content: "➤";
-  color: palevioletred; 
+  color: #ff7043; 
   font-size: 0.9rem;
   margin-right: 10px;
 }
@@ -90,7 +90,7 @@
 
 /* CTA Button */
 .ctaButton {
-  background: palevioletred;
+  background: #ff7043;
   color: #fff;
   border: none;
   padding: 14px 24px;
@@ -104,6 +104,15 @@
 .ctaButton:hover {
   background: green;
 }
+
+.loginWarning {
+  color: #ff4d4d;   /* red tone for warning */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
 
 /* Why Join Us */
 .benefits {
@@ -146,7 +155,7 @@
 
 /* Perks Section */
 .perksSection {
-  background: #f9fafb;
+  background:  #fffaf0;
   padding: 60px 30px;
   border-radius: 20px;
   margin-top: 80px;
@@ -168,7 +177,7 @@
 }
 
 .perksButton {
-  background: #16a34a;
+  background: #ff7043;
   color: #fff;
   border: none;
   padding: 14px 28px;
@@ -178,7 +187,7 @@
 }
 
 .perksButton:hover {
-  background: #15803d;
+  background: green;
 }
 
 /* Responsive */

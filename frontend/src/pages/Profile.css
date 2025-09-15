@@ -12,7 +12,7 @@ body {
   max-width: 1200px;          /* fixed width */
   margin: 40px auto;          /* center horizontally */
   padding: 5rem;              /* spacing inside container */
-  background: #f9fafc;        /* light background */
+  background: #fffaf0;        /* light background */
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }

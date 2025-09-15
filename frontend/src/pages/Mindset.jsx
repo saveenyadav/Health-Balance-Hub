@@ -90,39 +90,6 @@ function Mindset() {
         </div>
       </section>
 
-      {/* Schedule Section */}
-      <section className={styles.schedule}>
-        <div className={styles.container}>
-          <h2>Schedule</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Day</th>
-                <th>Session</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Monday</td>
-                <td>Yoga Class</td>
-                <td>10:00 AM</td>
-              </tr>
-              <tr>
-                <td>Wednesday</td>
-                <td>Meditation Coaching</td>
-                <td>2:00 PM</td>
-              </tr>
-              <tr>
-                <td>Friday</td>
-                <td>Motivation Session</td>
-                <td>6:00 PM</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       {/* Resources Section */}
       <section className={styles.resources}>
         <div className={styles.container}>
@@ -160,6 +127,39 @@ function Mindset() {
               <p>Use ready-to-go templates for goal-setting, planning, and self-assessment.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Schedule Section */}
+      <section className={styles.schedule}>
+        <div className={styles.container}>
+          <h2>Schedule</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Day</th>
+                <th>Session</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monday</td>
+                <td>Yoga Class</td>
+                <td>10:00 AM</td>
+              </tr>
+              <tr>
+                <td>Wednesday</td>
+                <td>Meditation Coaching</td>
+                <td>2:00 PM</td>
+              </tr>
+              <tr>
+                <td>Friday</td>
+                <td>Motivation Session</td>
+                <td>6:00 PM</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 

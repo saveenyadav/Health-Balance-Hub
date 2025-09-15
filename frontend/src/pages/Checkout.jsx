@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/Checkout.module.css";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+// Add icons (you can replace these with real SVGs or images)
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
 
 function Checkout() {
   const location = useLocation();
+  const { planName, price } = location.state || {};
+
+  const { upgradePlan } = useAuth();
   const navigate = useNavigate();
-  const { planName = "basic", price = 29 } = location.state || {};
-  const { upgradePlan, user } = useAuth();
+
 
   // Form State
   const [formData, setFormData] = useState({
@@ -202,6 +207,11 @@ function Checkout() {
               <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} /> I agree to Terms & Conditions
             </label>
           </div>
+
+
+          <button type="submit" className={styles.submitButton} disabled={!isLeftFormValid() || !agreed} style={{ backgroundColor: !isLeftFormValid() || !agreed ? "#e85a2a" : "#16a34a" }}>
+            Submit
+          </button>
         </form>
       </div>
       {/* Right Side - Payment Section */}
@@ -245,11 +255,154 @@ function Checkout() {
             </div>
           )}
         </div>
-        {/* Place Order */}
-        <button disabled={!isFormValid()} onClick={handlePlaceOrder} className={styles.orderButton}>
+
+        <div className={styles.costOverview}>
+          <div className={styles.subHeading}>Cost Overview</div>
+          <div className={styles.costRow}><span>Membership fee:</span><span>€{price || 29}/month</span></div>
+          <div className={styles.costRow}><span>Activation fee:</span><span>€15.00</span></div>
+          <div className={styles.costRow}><span>Training & service fee:</span><span>€0.00</span></div>
+          <div className={styles.costRow}><span>Total Price (Minimum Term):</span><span><strong>€{totalPrice}</strong></span></div>
+        </div>
+
+        <hr className={styles.divider} />
+
+        <div className={styles.paymentMethods}>
+          <div className={styles.subHeading}>Select Payment Method</div>
+
+          {/* Credit Card */}
+          <div className={styles.paymentOption}>
+            <label>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="Credit Card"
+                disabled={!submittedLeftForm}
+                checked={formData.paymentMethod === "Credit Card"}
+                onChange={handleInputChange}
+              />
+              <FaCreditCard size={40}/> Credit Card
+            </label>
+            {formData.paymentMethod === "Credit Card" && (
+              <div className={styles.paymentDetails}>
+                <input
+                  type="text"
+                  name="cardNumber"
+                  placeholder="Card Number"
+                  value={formData.cardNumber}
+                  onChange={handleInputChange}
+                />
+                {formErrors.cardNumber && <p className={styles.error}>{formErrors.cardNumber}</p>}
+
+                <input
+                  type="text"
+                  name="expiryDate"
+                  placeholder="MM/YY"
+                  value={formData.expiryDate}
+                  onChange={handleInputChange}
+                />
+                {formErrors.expiryDate && <p className={styles.error}>{formErrors.expiryDate}</p>}
+
+                <input
+                  type="text"
+                  name="cvv"
+                  placeholder="CVV"
+                  value={formData.cvv}
+                  onChange={handleInputChange}
+                />
+                {formErrors.cvv && <p className={styles.error}>{formErrors.cvv}</p>}
+              </div>
+            )}
+          </div>
+
+          {/* PayPal */}
+          <div className={styles.paymentOption}>
+            <label>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="PayPal"
+                disabled={!submittedLeftForm}
+                checked={formData.paymentMethod === "PayPal"}
+                onChange={handleInputChange}
+              />
+              <FaPaypal size={40} /> PayPal
+            </label>
+            {formData.paymentMethod === "PayPal" && (
+              <div className={styles.paymentDetails}>
+                <input
+                  type="email"
+                  name="paypalEmail"
+                  placeholder="PayPal Email"
+                  value={formData.paypalEmail}
+                  onChange={handleInputChange}
+                />
+                {formErrors.paypalEmail && <p className={styles.error}>{formErrors.paypalEmail}</p>}
+              </div>
+            )}
+          </div>
+
+          {/* Bank Transfer */}
+          <div className={styles.paymentOption}>
+            <label>
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="Bank Transfer"
+                disabled={!submittedLeftForm}
+                checked={formData.paymentMethod === "Bank Transfer"}
+                onChange={handleInputChange}
+              />
+              <FaUniversity size={40}/> Bank Transfer
+            </label>
+            {formData.paymentMethod === "Bank Transfer" && (
+              <div className={styles.paymentDetails}>
+                <input
+                  type="text"
+                  name="bankAccount"
+                  placeholder="Bank Account Number"
+                  value={formData.bankAccount}
+                  onChange={handleInputChange}
+                />
+                {formErrors.bankAccount && <p className={styles.error}>{formErrors.bankAccount}</p>}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <button className={styles.orderButton} disabled={!isPaymentValid()} onClick={handlePlaceOrder} style={{ backgroundColor: isPaymentValid() ? "#16a34a" : "#e85a2a" }}>
           Place Binding Order
         </button>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            {!showMessage ? (
+              <div className={styles.loaderSection}>
+                <div className={styles.loader}></div>
+                <p className={styles.countdownText}>{countdown} seconds left</p>
+              </div>
+            ) : (
+              <div className={styles.thankYouMessage}>
+                <h3>🎉 Thank you, {formData.fullName || "Customer"}!</h3>
+                <p>You have selected the <strong>{planName || "Standard Plan"} (€{totalPrice}/month)</strong> with <strong>{formData.paymentMethod}</strong> payment.</p>
+                <p>A confirmation email will be sent to {formData.email || "your email"}.</p>
+                <button
+                  className={styles.closeModalButton}
+                  onClick={() => {
+                    setShowModal(false);
+                    navigate("/profile");
+                  }}
+                >
+                  Close
+                </button>
+
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

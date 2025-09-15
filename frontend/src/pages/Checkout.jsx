@@ -1,11 +1,19 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; 
 import styles from "../styles/Checkout.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 // Add icons (you can replace these with real SVGs or images)
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
+
+// ✅ Debug: check if env variable is loading
+const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+console.log("Backend URL is:", backendURL);
+
+
+
+
 
 function Checkout() {
   const location = useLocation();
@@ -14,11 +22,9 @@ function Checkout() {
   const { upgradePlan } = useAuth();
   const navigate = useNavigate();
 
-
-  // Form State
   const [formData, setFormData] = useState({
     fullName: "",
-    email: user?.email || "",
+    email: "",
     phone: "",
     street: "",
     city: "",
@@ -29,12 +35,15 @@ function Checkout() {
     cvv: "",
     paypalEmail: "",
     bankAccount: "",
-    gender: "",
-    dob: "",
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  const [showMessage, setShowMessage] = useState(false);
   const [agreed, setAgreed] = useState(false);
+
+  const [submittedLeftForm, setSubmittedLeftForm] = useState(false);
 
   const activationFee = 15;
   const totalPrice = (price || 29) + activationFee;
@@ -43,217 +52,218 @@ function Checkout() {
   const validateField = (name, value) => {
     switch (name) {
       case "fullName":
-        return /^[A-Za-z ]{3,}$/.test(value) ? "" : "Name must be at least 3 letters.";
+        if (!/^[A-Za-z ]{3,}$/.test(value)) return "Name must be at least 3 letters and contain only alphabets.";
+        break;
       case "email":
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Enter a valid email address.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid email address.";
+        break;
       case "phone":
-        return /^\d{10,}$/.test(value) ? "" : "Phone must be at least 10 digits.";
+        if (!/^\d{10,}$/.test(value)) return "Phone number must be at least 10 digits.";
+        break;
       case "street":
       case "city":
-        return value.trim().length >= 3 ? "" : "This field must be at least 3 characters.";
+        if (value.trim().length < 3) return "This field must be at least 3 characters.";
+        break;
       case "postalCode":
-        return /^\d{4,10}$/.test(value) ? "" : "Enter a valid postal code.";
+        if (!/^\d{4,10}$/.test(value)) return "Enter a valid postal code.";
+        break;
       case "cardNumber":
-        return /^\d{16}$/.test(value) ? "" : "Card number must be 16 digits.";
+        if (!/^\d{16}$/.test(value)) return "Card number must be 16 digits.";
+        break;
       case "expiryDate":
-        return /^\d{2}\/\d{2}$/.test(value) ? "" : "Expiry date MM/YY.";
+        if (!/^\d{2}\/\d{2}$/.test(value)) return "Enter expiry date in MM/YY format.";
+        break;
       case "cvv":
-        return /^\d{3,4}$/.test(value) ? "" : "CVV must be 3 or 4 digits.";
+        if (!/^\d{3,4}$/.test(value)) return "CVV must be 3 or 4 digits.";
+        break;
       case "paypalEmail":
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "" : "Enter a valid PayPal email.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid PayPal email.";
+        break;
       case "bankAccount":
-        return /^\d{8,20}$/.test(value) ? "" : "Bank account 8-20 digits.";
+        if (!/^\d{8,20}$/.test(value)) return "Bank account number must be 8-20 digits.";
+        break;
       default:
         return "";
     }
+    return "";
   };
 
-  // Input Handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setFormErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
   };
 
-  // Form Validation
-  const isMembershipValid = () => {
+  const isLeftFormValid = () => {
     const requiredFields = ["fullName", "email", "phone", "street", "city", "postalCode"];
-    return requiredFields.every(f => formData[f] && !formErrors[f]) && agreed;
+    for (let field of requiredFields) {
+      if (!formData[field] || formErrors[field]) return false;
+    }
+    return true;
+  };
+
+  const handleLeftFormSubmit = (e) => {
+    e.preventDefault();
+    if (isLeftFormValid()) setSubmittedLeftForm(true);
+    else alert("Please fill all fields correctly!");
   };
 
   const isPaymentValid = () => {
     if (!formData.paymentMethod) return false;
     if (formData.paymentMethod === "Credit Card") {
-      return ["cardNumber", "expiryDate", "cvv"].every(f => formData[f] && !formErrors[f]);
+      const fields = ["cardNumber", "expiryDate", "cvv"];
+      return fields.every(f => formData[f] && !formErrors[f]);
     }
     if (formData.paymentMethod === "PayPal") return formData.paypalEmail && !formErrors.paypalEmail;
     if (formData.paymentMethod === "Bank Transfer") return formData.bankAccount && !formErrors.bankAccount;
     return false;
   };
 
-  const isFormValid = () => isMembershipValid() && isPaymentValid();
+  // ===== FIXED handlePlaceOrder =====
+  const handlePlaceOrder = async () => {
+  if (!isPaymentValid()) {
+    alert("Please fill all payment details correctly!");
+    return;
+  }
 
-  // Submit All Data Together
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault();
-    if (!isFormValid()) {
-      alert("Please fill all fields correctly and agree to the terms!");
+  try {
+    // ✅ no token needed, credentials: "include" will send cookie
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/membership/payment`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ important!
+        body: JSON.stringify({
+          ...formData,
+          planName,
+          price: totalPrice,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Payment failed. Please try again.");
       return;
     }
 
-    // Debug log
-    console.log("Submitting membership & payment:", { ...formData, planName, price: totalPrice });
+    // Update AuthContext (local state)
+    upgradePlan({
+      planName,
+      monthlyFee: price,
+      totalPrice,
+      paymentMethod: formData.paymentMethod,
+      email: formData.email, // optional fallback
+    });
 
-    try {
-      const res = await fetch("http://localhost:5001/api/membership/payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ ...formData, planName, price: totalPrice }),
-      });
-      const data = await res.json();
+    // Show modal countdown and success message
+    setShowModal(true);
+    setCountdown(5);
+    setShowMessage(false);
+  } catch (err) {
+    console.error("handlePlaceOrder error:", err);
+    alert("Network error. Please try again.");
+  }
+};
 
-      if (res.ok && data.success) {
-        upgradePlan({ planName, monthlyFee: price, totalPrice, paymentMethod: formData.paymentMethod });
-        setFormData({
-          fullName: "",
-          email: user?.email || "",
-          phone: "",
-          street: "",
-          city: "",
-          postalCode: "",
-          paymentMethod: "",
-          cardNumber: "",
-          expiryDate: "",
-          cvv: "",
-          paypalEmail: "",
-          bankAccount: "",
-          gender: "",
-          dob: "",
-        });
-        setAgreed(false);
-        alert("Congratulations! Your membership and payment are complete. Check your inbox for confirmation.");
-        navigate("/profile");
-      } else {
-        alert(data.message || "Payment failed.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Network error. Please try again.");
-    }
-  };
+  // ===== END FIX =====
+
+  useEffect(() => {
+    let timer;
+    if (showModal && countdown > 0) timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    else if (showModal && countdown === 0) setShowMessage(true);
+    return () => clearTimeout(timer);
+  }, [showModal, countdown]);
 
   return (
     <div className={styles.checkoutPage}>
-      {/* Left Side - Membership Form */}
+      {/* Left Side - Form */}
       <div className={styles.formSection}>
-        <h2>Membership Details</h2>
-        <form className={styles.form}>
-          {/* Gender */}
+        <h2>Checkout Form</h2>
+        <form className={styles.form} onSubmit={handleLeftFormSubmit}>
           <div className={styles.formGroup}>
             <label>Gender</label>
             <div className={styles.radioGroup}>
-              {["male","female","misc"].map(g => (
-                <label key={g}>
-                  <input type="radio" name="gender" value={g} checked={formData.gender===g} onChange={handleInputChange} /> {g.charAt(0).toUpperCase()+g.slice(1)}
-                </label>
-              ))}
+              <label><input type="radio" name="gender" value="male" /> Male</label>
+              <label><input type="radio" name="gender" value="female" /> Female</label>
+              <label><input type="radio" name="gender" value="misc" /> Miscellaneous</label>
             </div>
           </div>
-          {/* Full Name */}
+
           <div className={styles.formGroup}>
             <label>Full Name</label>
-            <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} />
+            <input type="text" name="fullName" placeholder="Enter your full name" value={formData.fullName} onChange={handleInputChange} />
             {formErrors.fullName && <p className={styles.error}>{formErrors.fullName}</p>}
           </div>
-          {/* DOB */}
+
           <div className={styles.formGroup}>
             <label>Date of Birth</label>
-            <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} />
-          </div>
-          {/* Email */}
-          <div className={styles.formGroup}>
-            <label>Email</label>
-            <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
-            {formErrors.email && <p className={styles.error}>{formErrors.email}</p>}
-          </div>
-          {/* Phone */}
-          <div className={styles.formGroup}>
-            <label>Phone</label>
-            <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} />
-            {formErrors.phone && <p className={styles.error}>{formErrors.phone}</p>}
-          </div>
-          {/* Street */}
-          <div className={styles.formGroup}>
-            <label>Street</label>
-            <input type="text" name="street" value={formData.street} onChange={handleInputChange} />
-            {formErrors.street && <p className={styles.error}>{formErrors.street}</p>}
-          </div>
-          {/* City */}
-          <div className={styles.formGroup}>
-            <label>City</label>
-            <input type="text" name="city" value={formData.city} onChange={handleInputChange} />
-            {formErrors.city && <p className={styles.error}>{formErrors.city}</p>}
-          </div>
-          {/* Postal Code */}
-          <div className={styles.formGroup}>
-            <label>Postal Code</label>
-            <input type="text" name="postalCode" value={formData.postalCode} onChange={handleInputChange} />
-            {formErrors.postalCode && <p className={styles.error}>{formErrors.postalCode}</p>}
-          </div>
-          {/* Terms & Conditions */}
-          <div className={styles.formGroupCheckbox}>
-            <label>
-              <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} /> I agree to Terms & Conditions
-            </label>
+            <input type="date" name="dob" />
           </div>
 
+          <div className={styles.formGroup}>
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" value={formData.email} onChange={handleInputChange} />
+            {formErrors.email && <p className={styles.error}>{formErrors.email}</p>}
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="Enter your phone number" value={formData.phone} onChange={handleInputChange} />
+            {formErrors.phone && <p className={styles.error}>{formErrors.phone}</p>}
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Address</label>
+            <input type="text" name="street" placeholder="Street" value={formData.street} onChange={handleInputChange} />
+            {formErrors.street && <p className={styles.error}>{formErrors.street}</p>}
+            <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleInputChange} />
+            {formErrors.city && <p className={styles.error}>{formErrors.city}</p>}
+            <input type="text" name="postalCode" placeholder="Postal Code" value={formData.postalCode} onChange={handleInputChange} />
+            {formErrors.postalCode && <p className={styles.error}>{formErrors.postalCode}</p>}
+          </div>
+
+          <div className={styles.formGroupCheckbox}>
+            <label>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />{" "}
+              I agree to the Terms & Conditions
+            </label>
+          </div>
 
           <button type="submit" className={styles.submitButton} disabled={!isLeftFormValid() || !agreed} style={{ backgroundColor: !isLeftFormValid() || !agreed ? "#e85a2a" : "#16a34a" }}>
             Submit
           </button>
         </form>
       </div>
-      {/* Right Side - Payment Section */}
+
+      {/* Right Side - Payment */}
       <div className={styles.paymentSection}>
         <h2>Payment Section</h2>
-        {/* Credit Card */}
-        <div className={styles.paymentOption}>
-          <label>
-            <input type="radio" name="paymentMethod" value="Credit Card" checked={formData.paymentMethod==="Credit Card"} onChange={handleInputChange} />
-            <FaCreditCard size={30}/> Credit Card
-          </label>
-          {formData.paymentMethod === "Credit Card" && (
-            <div className={styles.paymentDetails}>
-              <input type="text" name="cardNumber" placeholder="Card Number" value={formData.cardNumber} onChange={handleInputChange} />
-              <input type="text" name="expiryDate" placeholder="MM/YY" value={formData.expiryDate} onChange={handleInputChange} />
-              <input type="text" name="cvv" placeholder="CVV" value={formData.cvv} onChange={handleInputChange} />
-            </div>
-          )}
+        <div className={styles.subHeading}>Overview</div>
+
+        <div className={styles.contractRow}>
+          <span>Contract</span>
+          <span className={styles.changeLink}>Change ({planName || "Standard Plan"})</span>
         </div>
-        {/* PayPal */}
-        <div className={styles.paymentOption}>
-          <label>
-            <input type="radio" name="paymentMethod" value="PayPal" checked={formData.paymentMethod==="PayPal"} onChange={handleInputChange} />
-            <FaPaypal size={30}/> PayPal
-          </label>
-          {formData.paymentMethod === "PayPal" && (
-            <div className={styles.paymentDetails}>
-              <input type="email" name="paypalEmail" placeholder="PayPal Email" value={formData.paypalEmail} onChange={handleInputChange} />
-            </div>
-          )}
+
+        <div className={styles.monthlyFee}>
+          <div>Your Monthly Fee</div>
+          <span className={styles.price}>€{price || 29}</span>
         </div>
-        {/* Bank Transfer */}
-        <div className={styles.paymentOption}>
-          <label>
-            <input type="radio" name="paymentMethod" value="Bank Transfer" checked={formData.paymentMethod==="Bank Transfer"} onChange={handleInputChange} />
-            <FaUniversity size={30}/> Bank Transfer
-          </label>
-          {formData.paymentMethod === "Bank Transfer" && (
-            <div className={styles.paymentDetails}>
-              <input type="text" name="bankAccount" placeholder="Bank Account Number" value={formData.bankAccount} onChange={handleInputChange} />
-            </div>
-          )}
+
+        <div className={styles.contractDetails}>
+          <div className={styles.subHeading}>Contract Details</div>
+          <div className={styles.contractRow}><span>Minimum term:</span><span>None</span></div>
+          <div className={styles.contractRow}><span>Extension:</span><span>Unlimited</span></div>
+          <div className={styles.contractRow}><span>Cancellation period:</span><span>Four weeks before <br /> end of billing cycle</span></div>
         </div>
 
         <div className={styles.costOverview}>
@@ -389,14 +399,27 @@ function Checkout() {
                 <p>You have selected the <strong>{planName || "Standard Plan"} (€{totalPrice}/month)</strong> with <strong>{formData.paymentMethod}</strong> payment.</p>
                 <p>A confirmation email will be sent to {formData.email || "your email"}.</p>
                 <button
-                  className={styles.closeModalButton}
-                  onClick={() => {
-                    setShowModal(false);
-                    navigate("/profile");
-                  }}
-                >
-                  Close
-                </button>
+  className={styles.closeModalButton}
+  onClick={() => {
+    // 1. Hide modal
+    setShowModal(false);
+
+    // 2. Update user state in AuthContext
+    upgradePlan({
+      planName,
+      monthlyFee: price,
+      totalPrice,
+      paymentMethod: formData.paymentMethod,
+      email: formData.email,
+    });
+
+    // 3. Navigate to profile page
+    navigate("/profile");
+  }}
+>
+  Close
+</button>
+
 
               </div>
             )}

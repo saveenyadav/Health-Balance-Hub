@@ -15,16 +15,11 @@ const API_BASE_URL = "http://localhost:5001/api";
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ start as true
   const [error, setError] = useState(null);
 
-  // Auto-check auth status on mount (only if token exists)
-  useEffect(() => {
-    const token = getCookie("token"); // check if JWT cookie exists
-    if (token) checkAuthStatus();
-  }, []);
-
   //* Helper to read cookie
+  // eslint-disable-next-line no-unused-vars
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -38,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await fetch(`${API_BASE_URL}/auth/user-profile`, {
         method: "GET",
-        credentials: "include",
+        credentials: "include", // ✅ include cookie
       });
 
       if (response.ok) {
@@ -57,6 +52,11 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  //* Auto-check auth status on mount
+  useEffect(() => {
+    checkAuthStatus(); // ✅ always check on mount, cookie will be sent automatically
+  }, []);
 
   //* Register new user
   const register = async (userData) => {
@@ -132,7 +132,6 @@ export const AuthProvider = ({ children }) => {
 
   //* Upgrade membership plan and ensure user is authenticated
   const upgradePlan = (planData) => {
-    // If user does not exist in context yet, create minimal user
     setUser(prev => {
       const updatedUser = prev
         ? {
@@ -145,7 +144,7 @@ export const AuthProvider = ({ children }) => {
             },
           }
         : {
-            email: planData.email || "", // fallback if new user
+            email: planData.email || "",
             profile: { membershipPlan: planData.planName },
             membership: {
               monthlyFee: planData.monthlyFee,
@@ -156,9 +155,7 @@ export const AuthProvider = ({ children }) => {
       return updatedUser;
     });
 
-    // ✅ Ensure isAuthenticated true after upgrade
     setIsAuthenticated(true);
-
     console.log("User plan upgraded in context:", planData.planName);
   };
 
@@ -174,7 +171,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         checkAuthStatus,
         upgradePlan,
-        setUser, // optional if you want manual updates elsewhere
+        setUser,
         setIsAuthenticated,
       }}
     >

@@ -19,7 +19,8 @@ function Profile() {
     navigate("/membership"); // redirect to membership page
   };
 
-  const hasActivePlan = user.plan && user.plan.planName && user.plan.planName !== "No active plan";
+  const membership = user.membership;
+  const hasActivePlan = membership && membership.planName && membership.planName !== "No active plan";
 
   return (
     <main className="profile-container">
@@ -29,7 +30,7 @@ function Profile() {
           <h1>Profile</h1>
         </div>
         <div className="header-user">
-          <h2>Welcome, {user.name}</h2>
+          <h2>Welcome, {user.name || user.email}</h2>
         </div>
       </header>
 
@@ -38,9 +39,9 @@ function Profile() {
         {/* User Info Card */}
         <div className="info-card">
           <h3>User Information</h3>
-          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Name:</strong> {user.name || user.email}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Member since:</strong> {user.memberSince}</p>
+          <p><strong>Member since:</strong> {user.memberSince || "-"}</p>
         </div>
 
         {/* Membership Card */}
@@ -48,10 +49,10 @@ function Profile() {
           <h3>Membership</h3>
           {hasActivePlan ? (
             <>
-              <p><strong>Plan:</strong> {user.plan.planName}</p>
-              <p><strong>Monthly Fee:</strong> €{user.plan.monthlyFee}</p>
-              <p><strong>Total Price:</strong> €{user.plan.totalPrice}</p>
-              <p><strong>Payment Method:</strong> {user.plan.paymentMethod}</p>
+              <p><strong>Plan:</strong> {membership.planName}</p>
+              <p><strong>Monthly Fee:</strong> €{membership.monthlyFee}</p>
+              <p><strong>Total Price:</strong> €{membership.totalPrice}</p>
+              <p><strong>Payment Method:</strong> {membership.paymentMethod}</p>
             </>
           ) : (
             <p><strong>Plan:</strong> No active plan</p>

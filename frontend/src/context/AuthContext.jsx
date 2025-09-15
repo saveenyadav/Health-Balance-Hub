@@ -138,6 +138,7 @@ export const AuthProvider = ({ children }) => {
             ...prev,
             profile: { ...prev.profile, membershipPlan: planData.planName },
             membership: {
+              planName: planData.planName,
               monthlyFee: planData.monthlyFee,
               totalPrice: planData.totalPrice,
               paymentMethod: planData.paymentMethod,
@@ -147,6 +148,7 @@ export const AuthProvider = ({ children }) => {
             email: planData.email || "",
             profile: { membershipPlan: planData.planName },
             membership: {
+              planName: planData.planName,
               monthlyFee: planData.monthlyFee,
               totalPrice: planData.totalPrice,
               paymentMethod: planData.paymentMethod,
@@ -155,7 +157,7 @@ export const AuthProvider = ({ children }) => {
       return updatedUser;
     });
 
-    setIsAuthenticated(true);
+    setIsAuthenticated(true);// keep user logged in
     console.log("User plan upgraded in context:", planData.planName);
   };
 

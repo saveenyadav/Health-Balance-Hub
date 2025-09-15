@@ -13,6 +13,7 @@ import yogaRoutes from './routes/yogaRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';           
 import contactRoutes from './routes/contactRoutes.js';
+import membershipRoutes from "./routes/membership.js"; //* updated by Okile
 
 //* Load environment variables
 dotenv.config();
@@ -67,6 +68,7 @@ app.use('/api/yoga-classes', yogaRoutes);      //? Yoga class management
 app.use('/api/bookings', bookingRoutes);       //? Booking system
 app.use('/api/blogs', blogRoutes);             //? Blog management
 app.use('/api/contact', contactRoutes);        //? Contact form system
+app.use('/api/membership', membershipRoutes); //? updated by Okile
 
 //* API Documentation Endpoint
 app.get('/api', (req, res) => {

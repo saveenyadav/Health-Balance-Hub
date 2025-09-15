@@ -47,7 +47,7 @@ function Register() {
       if (result.success) {
         setError("");
         // Add verification guidance to the success message (backend sends verification email).
-        setSuccess(`Hi ${name}! Registration successful. Verification Email sent to your inbox.`); // ::Updated by Okile
+        setSuccess(`Hi ${name}! To activate your account, please check the E-mail we sent to your inbox!`); // ::Updated by Okile
         setForm({ firstName: "", lastName: "", email: "", password: "" });
 
         // setTimeout(() => {

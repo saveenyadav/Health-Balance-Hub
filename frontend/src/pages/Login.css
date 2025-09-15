@@ -177,6 +177,8 @@ input:focus {
 
 .apple-btn:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 input:focus {
@@ -186,6 +188,43 @@ input:focus {
   transition: all 0.3s ease;
 }
 
+/* Backend integration styles - added by okile for success/error messages */
+.success-message {
+  background-color: rgba(212, 237, 218, 0.95);
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
+}
+
+.error-message {
+  background-color: rgba(248, 215, 218, 0.95);
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+  animation: slideIn 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
 .primary-btn:hover {
@@ -194,16 +233,41 @@ input:focus {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-
-.google-btn:hover,
-.apple-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+/* Disabled state for form elements during login - added by okile */
+.login-form input:disabled,
+.login-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
+.login-form .toggle-password {
+  transition: opacity 0.2s ease;
+}
+
+/* Ensure disabled toggle password has proper cursor */
+.login-form input:disabled + .toggle-password {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password a {
+  color: #906137;
+  text-decoration: none;
+  font-size: 14px;
+}
 
 .toggle-password:hover {
   color: green;
   transform: scale(1.1);
   transition: all 0.3s ease;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+  color: #805ad5;
 }

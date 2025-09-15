@@ -136,6 +136,24 @@ footer {
   font-size: 15px;
 }
 
+/* NEW CSS: Message field alignment improvements */
+.message-field-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.message-field-container textarea {
+  margin-bottom: 5px;
+}
+
+.character-counter {
+  align-self: flex-start;
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 15px;
+}
+
 footer {
   margin-top: 2rem;
   font-size: 0.8rem;

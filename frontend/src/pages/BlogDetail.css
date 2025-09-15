@@ -62,14 +62,14 @@
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 600;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  background-color: #ff7043 ;
   color: #fff;
   text-decoration: none;
   transition: background 0.3s, transform 0.3s, color 0.3s;
 }
 
 .back-to-blogs:hover {
-  background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+  
   color: #fff;
   transform: translateY(-3px);
 }

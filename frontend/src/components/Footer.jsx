@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../styles/Footer.module.css";
 import { Link } from "react-router-dom";
 import {
@@ -10,6 +10,24 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setSuccessMessage(
+      "💌 Thank you for joining our newsletter! You’ll be updated via email."
+    );
+    setEmail("");
+
+    // Hide message after 3 seconds
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+  };
+
   return (
     <footer className={styles.footer}>
       {/* Top Section */}
@@ -20,16 +38,20 @@ const Footer = () => {
           <p className={styles.description}>
             Your daily dose of wellness, mindful living, and holistic health.
           </p>
-          <form className={styles.newsletterForm}>
+          <form className={styles.newsletterForm} onSubmit={handleNewsletterSubmit}>
             <input
               type="email"
               placeholder="Enter your email"
               className={styles.newsletterInput}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <button type="submit" className={styles.newsletterButton}>
               Confirm
             </button>
           </form>
+          {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
           <small className={styles.policy}>
             By submitting your email you agree to receive updates and wellness
             tips from Health Balance Hub. See our{" "}
@@ -64,13 +86,13 @@ const Footer = () => {
         <div className={styles.column}>
           <h4 className={styles.heading}>Connect</h4>
           <ul className={styles.socialList}>
-            <li><a href="#"><FaFacebookF /> Facebook</a></li>
-            <li><a href="#"><FaInstagram /> Instagram</a></li>
-            <li><a href="#"><FaYoutube /> YouTube</a></li>
-            <li><a href="#"><FaLinkedinIn /> LinkedIn</a></li>
+            <li><a href="#"><FaFacebookF style={{ color: "#1877F2" }}/> Facebook</a></li>
+            <li><a href="#"><FaInstagram className={styles.instagramSvg}/> Instagram</a></li>
+            <li><a href="#"><FaYoutube style={{ color: "#FF0000" }} /> YouTube</a></li>
+            <li><a href="#"><FaLinkedinIn style={{ color: "#0A66C2" }}/> LinkedIn</a></li>
           </ul>
           <ul className={styles.contact}>
-            <li><FaEnvelope /> info@healthbalancehub.com</li>
+            <li><FaEnvelope style={{ color: "#333333" }}/> info@healthbalancehub.com</li>
           </ul>
         </div>
       </div>

@@ -55,9 +55,9 @@ function Header() {
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
           <Link to="/blogs">Blogs</Link>
+          <Link to="/mindset">Mindset</Link>
           <Link to="/workout">Workout</Link>
           <Link to="/nutrition">Nutrition</Link>
-          <Link to="/mindset">Mindset</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/membership">Membership</Link>
         </nav>
@@ -65,7 +65,7 @@ function Header() {
         {/* Icons */}
         <div className={styles.icons}>
           {/* Search icon */}
-          <Link to="/search">
+          <Link to="/search" className={styles.iconLink}>
             <FaSearch size={20} />
           </Link>
 
@@ -74,7 +74,7 @@ function Header() {
             <FaUser
               size={20}
               onClick={handleUserClick}
-              style={{ cursor: "pointer" }}
+              className={styles.iconLink}
             />
             {user && dropdownOpen && (
               <div className={styles.dropdown}>
@@ -90,4 +90,3 @@ function Header() {
 }
 
 export default Header;
-

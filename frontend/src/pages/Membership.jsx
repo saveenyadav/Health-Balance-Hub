@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import styles from "../styles/Membership.module.css";
 import { useNavigate } from "react-router-dom"; // 👈 import useNavigate
+import { useAuth } from "../context/AuthContext"; // 👈 import auth
 
 function Membership() {
   const [showPerks, setShowPerks] = useState(false);
+  const [loginMessageFor, setLoginMessageFor] = useState(null); // 👈 track which plan shows warning
+  const { user } = useAuth(); // 👈 get logged in user
   const navigate = useNavigate(); // 👈 initialize navigate
 
   // Plans that get the special perks
@@ -15,7 +18,12 @@ function Membership() {
 
   // Redirect to checkout page with plan info
   const goToCheckout = (planName, price) => {
-    navigate("/checkout", { state: { planName, price } }); // 👈 pass plan info
+    if (user) {
+      navigate("/checkout", { state: { planName, price } }); // 👈 pass plan info
+    } else {
+      setLoginMessageFor(planName); // 👈 show warning only for clicked plan
+      setTimeout(() => setLoginMessageFor(null), 3000); // hide after 3s
+    }
   };
 
   return (
@@ -49,6 +57,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Basic Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
 
         {/* Plan 2 */}
@@ -69,6 +80,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Standard Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
 
         {/* Plan 3 */}
@@ -96,6 +110,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Premium Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
 
         {/* Plan 4 */}
@@ -124,6 +141,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Family Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
 
         {/* Plan 5 */}
@@ -144,6 +164,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Student Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
 
         {/* Plan 6 */}
@@ -171,6 +194,9 @@ function Membership() {
           >
             Choose Plan
           </button>
+          {loginMessageFor === "Corporate Plan" && (
+            <p className={styles.loginWarning}>⚠️ Please login first to choose a plan.</p>
+          )}
         </div>
       </section>
 

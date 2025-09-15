@@ -92,7 +92,7 @@
 }
 
 .submitButton {
-  background: #ff6b35;
+  background: #e85a2a;
   color: white;
   padding: 12px;
   border: none;
@@ -103,7 +103,7 @@
 }
 
 .submitButton:hover {
-  background: #e85a2a;
+  background: green;
 }
 
 /* Right - Payment */
@@ -199,7 +199,7 @@
 }
 
 .orderButton:hover {
-  background: #e85a2a;
+  background: green;
 }
 
 /* Divider line under summary */
@@ -302,7 +302,7 @@
 
 .thankYouMessage h3 {
   font-size: 1.2rem;
-  color: #007bff;
+  color: green;
   margin-bottom: 10px;
 }
 
@@ -313,7 +313,7 @@
 }
 
 .closeModalButton {
-  background: #007bff;
+  background:  #e85a2a;
   color: white;
   padding: 10px 16px;
   border: none;
@@ -324,5 +324,5 @@
 }
 
 .closeModalButton:hover {
-  background: #0056b3;
+  background: green;
 }

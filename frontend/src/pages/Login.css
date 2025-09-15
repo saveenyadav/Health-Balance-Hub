@@ -52,7 +52,7 @@
 
 .login-link a:hover {
   text-decoration: none;
-  color: #805ad5;
+  color: #ff7043;
 }
 
 .form-group {
@@ -107,7 +107,7 @@ input:focus {
 }
 
 .terms a {
-  color: #906137;
+  color: #ff7043;
   text-decoration: none;
 }
 
@@ -122,13 +122,13 @@ input:focus {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  background-color: #906137;
+  background-color: #ff7043;
   color: #fff;
   transition: background 0.3s;
 }
 
 .primary-btn:hover {
-  background-color: #805ad5;
+  background-color: green;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -181,6 +181,13 @@ input:focus {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+input:focus {
+  outline: none;
+  border: 2px solid #ff7043;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
 /* Backend integration styles - added by okile for success/error messages */
 .success-message {
   background-color: rgba(212, 237, 218, 0.95);
@@ -219,6 +226,13 @@ input:focus {
   }
 }
 
+
+.primary-btn:hover {
+  background-color: green;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
 /* Disabled state for form elements during login - added by okile */
 .login-form input:disabled,
 .login-form button:disabled {
@@ -245,6 +259,12 @@ input:focus {
   color: #906137;
   text-decoration: none;
   font-size: 14px;
+}
+
+.toggle-password:hover {
+  color: green;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
 }
 
 .forgot-password a:hover {

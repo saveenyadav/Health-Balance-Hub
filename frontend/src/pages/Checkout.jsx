@@ -7,13 +7,20 @@ import { useNavigate } from "react-router-dom";
 // Add icons (you can replace these with real SVGs or images)
 import { FaCreditCard, FaPaypal, FaUniversity } from "react-icons/fa";
 
+// ✅ Debug: check if env variable is loading
+const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5001";
+console.log("Backend URL is:", backendURL);
+
+
+
+
+
 function Checkout() {
   const location = useLocation();
   const { planName, price } = location.state || {};
 
   const { upgradePlan } = useAuth();
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -34,7 +41,7 @@ function Checkout() {
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [showMessage, setShowMessage] = useState(false);
-  const [agreed, setAgreed] = useState(false); // ✅ new state for Terms & Conditions checkbox
+  const [agreed, setAgreed] = useState(false);
 
   const [submittedLeftForm, setSubmittedLeftForm] = useState(false);
 
@@ -112,25 +119,58 @@ function Checkout() {
     return false;
   };
 
-  const handlePlaceOrder = () => {
-    if (!isPaymentValid()) {
-      alert("Please fill all payment details correctly!");
+  // ===== FIXED handlePlaceOrder =====
+  const handlePlaceOrder = async () => {
+  if (!isPaymentValid()) {
+    alert("Please fill all payment details correctly!");
+    return;
+  }
+
+  try {
+    // ✅ no token needed, credentials: "include" will send cookie
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/membership/payment`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // ✅ important!
+        body: JSON.stringify({
+          ...formData,
+          planName,
+          price: totalPrice,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Payment failed. Please try again.");
       return;
     }
 
-     // Update user's plan in AuthContext
+    // Update AuthContext (local state)
     upgradePlan({
-    planName,
-    monthlyFee: price,
-    totalPrice,
-    paymentMethod: formData.paymentMethod,
-  });
-    
-    
+      planName,
+      monthlyFee: price,
+      totalPrice,
+      paymentMethod: formData.paymentMethod,
+      email: formData.email, // optional fallback
+    });
+
+    // Show modal countdown and success message
     setShowModal(true);
     setCountdown(5);
     setShowMessage(false);
-  };
+  } catch (err) {
+    console.error("handlePlaceOrder error:", err);
+    alert("Network error. Please try again.");
+  }
+};
+
+  // ===== END FIX =====
 
   useEffect(() => {
     let timer;
@@ -197,7 +237,6 @@ function Checkout() {
               I agree to the Terms & Conditions
             </label>
           </div>
-
 
           <button type="submit" className={styles.submitButton} disabled={!isLeftFormValid() || !agreed} style={{ backgroundColor: !isLeftFormValid() || !agreed ? "#e85a2a" : "#16a34a" }}>
             Submit
@@ -360,14 +399,27 @@ function Checkout() {
                 <p>You have selected the <strong>{planName || "Standard Plan"} (€{totalPrice}/month)</strong> with <strong>{formData.paymentMethod}</strong> payment.</p>
                 <p>A confirmation email will be sent to {formData.email || "your email"}.</p>
                 <button
-                  className={styles.closeModalButton}
-                  onClick={() => {
-                    setShowModal(false);
-                    navigate("/profile");
-                  }}
-                >
-                  Close
-                </button>
+  className={styles.closeModalButton}
+  onClick={() => {
+    // 1. Hide modal
+    setShowModal(false);
+
+    // 2. Update user state in AuthContext
+    upgradePlan({
+      planName,
+      monthlyFee: price,
+      totalPrice,
+      paymentMethod: formData.paymentMethod,
+      email: formData.email,
+    });
+
+    // 3. Navigate to profile page
+    navigate("/profile");
+  }}
+>
+  Close
+</button>
+
 
               </div>
             )}

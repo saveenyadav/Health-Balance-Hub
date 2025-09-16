@@ -7,27 +7,37 @@ import {
     updateDetails,
     updateProfile,
     updatePassword,
-    deleteAccount
+    deleteAccount,
+    updateMembershipDetails, //* membership registration controller
+    verifyEmail //* email verification controller
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//* public routes (no authentication required)
-router.post('/register', register); //? means anyone can register
-router.post('/login', login); //? means anyone can login
-router.post('/logout', logout); //? logout should work even with expired/invalid tokens
-router.get('/logout', logout); //? allow GET request for easy browser access
 
-//* protected routes (authentication required)
-router.use(protect); //* this protects all routes below 
+//* Public Routes (no auth required)
 
-// CHANGED: user-profile route now returns only the fields needed by frontend Profile.jsx
-router.get('/user-profile', getMe); //? must be logged in to see profile
+router.post('/register', register); // anyone can register
+router.post('/login', login); // anyone can login
+router.post('/logout', logout); // logout works even with expired/invalid tokens
+router.get('/logout', logout); // allow GET request for browser access
+router.get('/verify-email', verifyEmail); // email verification link
 
-router.put('/updatedetails', updateDetails); //? must be logged in to update details
-router.put('/updateprofile', updateProfile); //? must be logged in to update profile (fitness goals, age, phone)
-router.put('/updatepassword', updatePassword); //? must be logged in to change password
-router.delete('/delete-account', deleteAccount); //? must be logged in to delete account
+
+//* Protected Routes (auth required)
+
+router.use(protect); //* all routes below require authentication
+
+router.get('/user-profile', getMe); // logged-in user profile
+router.put('/updatedetails', updateDetails); // update name/email
+router.put('/updateprofile', updateProfile); // update profile (fitness goals, age, phone)
+router.put('/updatepassword', updatePassword); // change password
+router.delete('/delete-account', deleteAccount); // delete account
+router.put('/register-membership', updateMembershipDetails); // register/update membership
 
 export default router;
+
+
+
+

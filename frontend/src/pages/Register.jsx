@@ -8,6 +8,7 @@ import "./Register.css";
 
 function Register() {
   const { register, loading, error: authError } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
@@ -31,30 +32,32 @@ function Register() {
     const name = `${form.firstName} ${form.lastName}`.trim();
 
     try {
-      const result = await register({
+      // Build explicit payload for backend (only fields backend expects).
+      const payload = {
+        name, // ::Updated by Okile
+        email: form.email.toLowerCase().trim(), // ::Updated by Okile
+        password: form.password // ::Updated by Okile
+      };
 
-        ...form,
-         name // keep firstName, lastName, email, password, plus full name - Updated by okile
-        // name,
-        // email: form.email,
-        // password: form.password
-      });
+      const result = await register(payload); // ::Updated by Okile
 
-      //* 
-const emailToRedirect = form.email;//*Prevents stale email during redirect - updated by okile
+      // Use the exact email that was sent to backend for redirect/state (prevents stale values).
+      // const emailToRedirect = payload.email; // ::Updated by Okile
+
       if (result.success) {
         setError("");
-        setSuccess(`Welcome ${name}! Your account has been created successfully.`);
+        // Add verification guidance to the success message (backend sends verification email).
+        setSuccess(`Hi ${name}! To activate your account, please check the E-mail we sent to your inbox!`); // ::Updated by Okile
         setForm({ firstName: "", lastName: "", email: "", password: "" });
 
-        setTimeout(() => {
-          navigate("/login", { 
-            state: { 
-              message: `Registration successful! Please log in with your credentials.`,
-              email: emailToRedirect //form.email 
-            }
-          });
-        }, 2000);
+        // setTimeout(() => {
+        //   navigate("/login", { 
+        //     state: { 
+        //       message: `Registration successful! Please log in with your credentials.`,
+        //       email: emailToRedirect // ::Updated by Okile
+        //     }
+        //   });
+        // }, 2000);
 
       } else {
         setError(result.error || "Registration failed. Please try again.");
@@ -62,6 +65,7 @@ const emailToRedirect = form.email;//*Prevents stale email during redirect - upd
       
     // eslint-disable-next-line no-unused-vars
     } catch (error) {
+      console.error("Registration error:", error); // ::Updated by Okile
       setError("Registration failed. Please try again.");
     } finally {
       setIsRegistering(false);
@@ -81,7 +85,7 @@ const emailToRedirect = form.email;//*Prevents stale email during redirect - upd
           {success && (
             <div className="success-message">
               {success}
-              <p className="redirect-info">Redirecting to login page...</p>
+              {/* <p className="redirect-info">Redirecting to login page...</p> */}
             </div>
           )}
           {(error || authError) && !success && (
